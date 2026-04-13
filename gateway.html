@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hub Gateway</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 2rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .offline-message {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🤖</div>
+        <h1 id="title">AI Hub Gateway</h1>
+        <p id="message">Checking internet connection...</p>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+        </div>
+        <button class="btn" id="actionBtn" style="display: none;" onclick="proceedToAI()">Proceed to AI Hub</button>
+    </div>
+
+    <script>
+        function checkConnection() {
+            const title = document.getElementById('title');
+            const message = document.getElementById('message');
+            const loading = document.getElementById('loading');
+            const actionBtn = document.getElementById('actionBtn');
+
+            loading.style.display = 'block';
+
+            // Simulate a quick check
+            setTimeout(() => {
+                loading.style.display = 'none';
+
+                if (navigator.onLine) {
+                    title.textContent = 'Connection Detected';
+                    message.textContent = 'You are connected to the internet. Click below to access AI Hub.';
+                    actionBtn.style.display = 'inline-block';
+                } else {
+                    title.textContent = 'No Internet Connection';
+                    message.innerHTML = '<span class="offline-message">Please connect to the internet to access AI Hub.</span><br><br>AI Hub requires an active internet connection to function properly.';
+                    actionBtn.style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        function proceedToAI() {
+            window.location.href = 'ai.html';
+        }
+
+        // Check on load
+        window.addEventListener('load', checkConnection);
+
+        // Listen for online/offline changes
+        window.addEventListener('online', checkConnection);
+        window.addEventListener('offline', checkConnection);
+    </script>
+</body>
+</html>

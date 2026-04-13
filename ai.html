@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hub - Artificial Intelligence Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-status span {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .user-status button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .user-status button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: slideDown 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .chatbot-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            margin: 3rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .chatbot-section h2 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: #f9f9f9;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-message {
+            text-align: right;
+        }
+
+        .user-message p {
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            max-width: 70%;
+        }
+
+        .ai-message p {
+            background: #e0e0e0;
+            color: #333;
+            padding: 0.8rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            max-width: 70%;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: white;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        .chat-input-area button {
+            padding: 0.8rem 1.5rem;
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .chat-input-area button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .chat-input-area button:active {
+            transform: translateY(0);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .resources {
+            margin: 3rem 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .resource-card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+
+        .resource-card h4 {
+            margin-bottom: 0.75rem;
+            color: #403d65;
+        }
+
+        .resource-card p {
+            margin-bottom: 1rem;
+            color: #4b4b5e;
+        }
+
+        .resource-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .resource-card a:hover {
+            text-decoration: underline;
+        }
+
+        .feedback-section {
+            margin: 3rem 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .feedback-section h2 {
+            margin-bottom: 1rem;
+            color: #35335a;
+        }
+
+        .feedback-input {
+            width: 100%;
+            min-height: 120px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 1rem;
+            resize: vertical;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-action {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .feedback-action button {
+            background: #764ba2;
+            color: white;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .feedback-action button:hover {
+            background: #5e3d8d;
+        }
+
+        .feedback-list {
+            margin-top: 1rem;
+            list-style: none;
+            padding: 0;
+        }
+
+        .feedback-list li {
+            background: #f1f3ff;
+            border-radius: 8px;
+            padding: 0.9rem;
+            margin-bottom: 0.6rem;
+            color: #2e2e45;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: white;
+            color: #667eea;
+            padding: 0.8rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 50;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .clear-chat {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .clear-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .info-banner {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .info-banner p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .offline-banner {
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #e74c3c;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .offline-banner p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .chat-input-area input:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
+        }
+
+        .chat-input-area button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .modal-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: calc(100vh - 220px);
+            overflow-y: auto;
+        }
+
+        .modal-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .modal-form-group input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .modal-form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .modal-form-group input::placeholder {
+            color: #aaa;
+        }
+
+        .modal-input-icon {
+            position: relative;
+        }
+
+        .modal-input-icon input {
+            padding-left: 2.5rem;
+        }
+
+        .modal-input-icon span {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        .modal-password-toggle {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .modal-form-group.password-group {
+            position: relative;
+        }
+
+        .modal-form-group.password-group input {
+            padding-right: 2.5rem;
+        }
+
+        .modal-strength-meter {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .modal-strength-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .modal-strength-weak {
+            background: #e74c3c;
+            width: 33%;
+        }
+
+        .modal-strength-medium {
+            background: #f39c12;
+            width: 66%;
+        }
+
+        .modal-strength-strong {
+            background: #27ae60;
+            width: 100%;
+        }
+
+        .modal-strength-text {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            font-weight: 600;
+        }
+
+        .modal-strength-weak-text {
+            color: #e74c3c;
+        }
+
+        .modal-strength-medium-text {
+            color: #f39c12;
+        }
+
+        .modal-password-toggle {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .modal-form-group.password-group {
+            position: relative;
+        }
+
+        .modal-form-group.password-group input {
+            padding-right: 2.5rem;
+        }
+
+        .modal-strength-meter {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .modal-strength-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .modal-strength-weak {
+            background: #e74c3c;
+            width: 33%;
+        }
+
+        .modal-strength-medium {
+            background: #f39c12;
+            width: 66%;
+        }
+
+        .modal-strength-strong {
+            background: #27ae60;
+            width: 100%;
+        }
+
+        .modal-strength-text {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            font-weight: 600;
+        }
+
+        .modal-strength-weak-text {
+            color: #e74c3c;
+        }
+
+        .modal-strength-medium-text {
+            color: #f39c12;
+        }
+
+        .modal-strength-strong-text {
+            color: #27ae60;
+        }
+
+        .modal-terms {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .modal-terms input {
+            width: auto;
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+
+        .modal-terms label {
+            display: inline;
+            font-weight: normal;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .modal-terms a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .modal-terms a:hover {
+            text-decoration: underline;
+        }
+
+        .modal-button {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+        }
+
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .modal-button:active {
+            transform: translateY(0);
+        }
+
+        .modal-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-radius: 0 0 15px 15px;
+            text-align: center;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .modal-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .modal-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .modal-error {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            display: none;
+        }
+
+        .modal-error.show {
+            display: block;
+        }
+
+        .modal-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .modal-success.show {
+            display: block;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .close-modal:hover {
+            opacity: 0.7;
+        }
+
+        .modal-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .modal-content {
+                margin: 2% auto;
+                width: 95%;
+            }
+
+            .modal-header {
+                padding: 1.5rem;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Intro/Onboarding Styles */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .intro-modal {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .intro-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+        }
+
+        .intro-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .intro-body {
+            padding: 2rem;
+        }
+
+        .intro-step {
+            display: none;
+        }
+
+        .intro-step.active {
+            display: block;
+        }
+
+        .intro-step h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .intro-step p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .intro-step img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .intro-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .intro-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .intro-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .intro-btn.primary:hover {
+            background: #5568d3;
+        }
+
+        .intro-btn.secondary {
+            background: #f8f9fa;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .intro-btn.secondary:hover {
+            background: #e9ecef;
+        }
+
+        .intro-progress {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            margin: 0 5px;
+            transition: background 0.3s;
+        }
+
+        .progress-dot.active {
+            background: #667eea;
+        }
+
+        .intro-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .intro-close:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">🤖 AI Hub</div>
+                <ul>
+                    <li><a onclick="scrollToSection('features')">Features</a></li>
+                    <li><a onclick="scrollToSection('chatbot')">AI Chat</a></li>
+                    <li><a onclick="scrollToSection('stats')">Stats</a></li>
+                    <li><a onclick="scrollToSection('legal')">Legal</a></li>
+                </ul>
+                <div class="user-status" id="userStatus">
+                    <!-- User status will be populated by JavaScript -->
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome to AI Hub</h1>
+            <p>Experience the future of artificial intelligence</p>
+            <div class="cta-buttons">
+                <button class="btn-primary" onclick="handleGetStarted()">Get Started</button>
+                <button class="btn-secondary" onclick="scrollToSection('chatbot')">Try AI Chat</button>
+                <button id="signUpCTA" class="btn-primary" onclick="openModal('registrationModal')" style="background: #27ae60;">Sign Up</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <div class="container">
+            <div class="features">
+                <div class="feature-card" onclick="showAlert('Natural Language Processing')">
+                    <div class="feature-icon">🗣️</div>
+                    <h3>NLP Processing</h3>
+                    <p>Advanced natural language processing to understand and respond to human language with precision.</p>
+                </div>
+                <div class="feature-card" onclick="showAlert('Machine Learning')">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Machine Learning</h3>
+                    <p>Intelligent algorithms that learn and improve from experience without being explicitly programmed.</p>
+                </div>
+                <div class="feature-card" onclick="showAlert('Data Analysis')">
+                    <div class="feature-icon">📊</div>
+                    <h3>Data Analytics</h3>
+                    <p>Powerful data analysis tools to extract insights and patterns from complex datasets.</p>
+                </div>
+                <div class="feature-card" onclick="showAlert('Image Recognition')">
+                    <div class="feature-icon">👁️</div>
+                    <h3>Image Recognition</h3>
+                    <p>Detect and classify objects in images using state-of-the-art computer vision technology.</p>
+                </div>
+                <div class="feature-card" onclick="showAlert('Automation')">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Task Automation</h3>
+                    <p>Automate repetitive tasks and workflows to save time and increase productivity.</p>
+                </div>
+                <div class="feature-card" onclick="showAlert('Real-time Processing')">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-time Processing</h3>
+                    <p>Lightning-fast processing speeds for instant results and seamless user experiences.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="chatbot" class="chatbot-section">
+        <div class="container">
+            <h2>Interactive AI Chat</h2>
+            <div class="info-banner">
+                <p>💡 Ask me anything! I can search the internet and provide answers on any topic.</p>
+            </div>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai-message">
+                        <p>👋 Hello! I'm your AI assistant. How can I help you today?</p>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input 
+                        type="text" 
+                        id="chatInput" 
+                        placeholder="Type your message..." 
+                        onkeypress="handleChatKeypress(event)"
+                    >
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+            <div class="clear-chat">
+                <button class="clear-btn" onclick="clearChat()">Clear Chat</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="stats">
+        <div class="container">
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number">10M+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Languages</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="resources">
+        <div class="container">
+            <h2 style="color: white; text-align: center; margin-bottom: 1rem;">AI Learning Resources</h2>
+            <div class="resources" id="resourcesGrid">
+                <div class="resource-card">
+                    <h4>AI Basics</h4>
+                    <p>Learn what AI is, basic concepts, and how modern systems work.</p>
+                    <a href="https://www.coursera.org/learn/ai-for-everyone" target="_blank">Take a Course</a>
+                </div>
+                <div class="resource-card">
+                    <h4>Machine Learning</h4>
+                    <p>Understand models, training, and evaluation with practical examples.</p>
+                    <a href="https://www.tensorflow.org/tutorials" target="_blank">TensorFlow Tutorials</a>
+                </div>
+                <div class="resource-card">
+                    <h4>AI Ethics</h4>
+                    <p>Explore responsible AI, bias mitigation, and inclusive design.</p>
+                    <a href="https://www.ibm.com/topics/ethics-in-ai" target="_blank">Read More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="feedback" class="feedback-section">
+        <div class="container">
+            <h2>AI Hub Feedback</h2>
+            <p>Send us any feedback or feature ideas. This is a local demo submission form.</p>
+            <textarea id="feedbackInput" class="feedback-input" placeholder="Type your feedback here..."></textarea>
+            <div class="feedback-action">
+                <button onclick="submitFeedback()">Submit Feedback</button>
+                <button onclick="clearFeedback()" style="background: #e74c3c;">Clear</button>
+            </div>
+            <ul id="feedbackList" class="feedback-list"></ul>
+        </div>
+    </section>
+
+    <section id="legal" style="margin: 3rem 0; background: rgba(255,255,255,0.9); border-radius: 10px; padding: 2rem;">
+        <div class="container">
+            <h2 style="color: #2d2d5c;">Terms of Service & Privacy Policy</h2>
+            <p>Welcome to AI Hub. By using our services, you agree to the following terms and conditions. Please read carefully.</p>
+            <h3>Terms of Service</h3>
+            <p>AI Hub provides a demo chat and user registration system for educational purposes. You are responsible for all information you submit, and we may occasionally update features or remove accounts for policy violations. Use the platform at your own risk; we are not liable for data loss or misuse.</p>
+            <h3>Privacy Policy</h3>
+            <p>We store minimal data locally in your browser: email, phone, country, and passcode (for demo only). We do not share your data with third parties in this demo. All data is managed in localStorage on your device; clearing browser data removes it.</p>
+            <p><strong>Legal links:</strong> <a href="#legal">Terms of Service</a> | <a href="#legal">Privacy Policy</a></p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 AI Hub. All rights reserved. | Powered by Advanced AI Technology</p>
+        </div>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop" onclick="scrollToTop()">↑</div>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('registrationModal')">&times;</span>
+            <div class="modal-header">
+                <div class="logo">🤖</div>
+                <h2>Create Account</h2>
+                <p>Join AI Hub and unlock the power of AI</p>
+            </div>
+            <div class="modal-body">
+                <div class="modal-success" id="registrationSuccess">
+                    ✓ Registration successful! Welcome to AI Hub!
+                </div>
+
+                <form id="registrationForm">
+                    <div class="modal-form-group">
+                        <label for="modalEmail">Email Address</label>
+                        <div class="modal-input-icon">
+                            <span>✉️</span>
+                            <input
+                                type="email"
+                                id="modalEmail"
+                                name="email"
+                                placeholder="your.email@example.com"
+                                required
+                            >
+                        </div>
+                        <div class="modal-error" id="modalEmailError"></div>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="modalPhone">Phone Number</label>
+                        <div class="modal-input-icon">
+                            <span>📱</span>
+                            <input
+                                type="tel"
+                                id="modalPhone"
+                                name="phone"
+                                placeholder="+1 (123) 456-7890"
+                                required
+                            >
+                        </div>
+                        <div class="modal-error" id="modalPhoneError"></div>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="modalCountry">Country</label>
+                        <select id="modalCountry" name="country" required style="width: 100%; padding: 0.9rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;">
+                            <option value="" disabled selected>Select your country</option>
+                            <option value="United States">United States</option>
+                            <option value="Canada">Canada</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="modal-error" id="modalCountryError"></div>
+                    </div>
+
+                    <div class="modal-form-group password-group">
+                        <label for="modalPasscode">Passcode</label>
+                        <div class="modal-input-icon">
+                            <span>🔐</span>
+                            <input
+                                type="password"
+                                id="modalPasscode"
+                                name="passcode"
+                                placeholder="Enter a strong passcode"
+                                required
+                            >
+                            <span class="modal-password-toggle" onclick="toggleModalPassword('modalPasscode')">👁️</span>
+                        </div>
+                        <div class="modal-strength-meter">
+                            <div class="modal-strength-bar" id="modalStrengthBar"></div>
+                        </div>
+                        <div class="modal-strength-text" id="modalStrengthText"></div>
+                        <div class="modal-error" id="modalPasscodeError"></div>
+                    </div>
+
+                    <div class="modal-form-group password-group">
+                        <label for="modalConfirmPasscode">Confirm Passcode</label>
+                        <div class="modal-input-icon">
+                            <span>🔐</span>
+                            <input
+                                type="password"
+                                id="modalConfirmPasscode"
+                                name="confirmPasscode"
+                                placeholder="Re-enter your passcode"
+                                required
+                            >
+                            <span class="modal-password-toggle" onclick="toggleModalPassword('modalConfirmPasscode')">👁️</span>
+                        </div>
+                        <div class="modal-error" id="modalConfirmError"></div>
+                    </div>
+
+                    <div class="modal-terms">
+                        <input type="checkbox" id="modalTerms" name="terms" required>
+                        <label for="modalTerms">
+                            I agree to the <a href="#legal" onclick="closeModal('registrationModal');">Terms of Service</a> and <a href="#legal" onclick="closeModal('registrationModal');">Privacy Policy</a>
+                        </label>
+                        <div class="modal-error" id="modalTermsError"></div>
+                    </div>
+
+                    <button type="submit" class="modal-button">Create Account</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                Already have an account? <a href="#" onclick="switchToLogin()">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
+            <div class="modal-header">
+                <div class="logo">🤖</div>
+                <h2>Welcome Back</h2>
+                <p>Sign in to your AI Hub account</p>
+            </div>
+            <div class="modal-body">
+                <div class="modal-success" id="loginSuccess">
+                    ✓ Login successful! Welcome back!
+                </div>
+
+                <form id="loginForm">
+                    <div class="modal-form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <div class="modal-input-icon">
+                            <span>✉️</span>
+                            <input
+                                type="email"
+                                id="loginEmail"
+                                name="email"
+                                placeholder="your.email@example.com"
+                                required
+                            >
+                        </div>
+                        <div class="modal-error" id="loginEmailError"></div>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="loginCountry">Country</label>
+                        <select id="loginCountry" name="country" required style="width: 100%; padding: 0.9rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;">
+                            <option value="" disabled selected>Select your country</option>
+                            <option value="United States">United States</option>
+                            <option value="Canada">Canada</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="modal-error" id="loginCountryError"></div>
+                    </div>
+
+                    <div class="modal-form-group password-group">
+                        <label for="loginPasscode">Passcode</label>
+                        <div class="modal-input-icon">
+                            <span>🔐</span>
+                            <input
+                                type="password"
+                                id="loginPasscode"
+                                name="passcode"
+                                placeholder="Enter your passcode"
+                                required
+                            >
+                            <span class="modal-password-toggle" onclick="toggleModalPassword('loginPasscode')">👁️</span>
+                        </div>
+                        <div class="modal-error" id="loginPasscodeError"></div>
+                    </div>
+
+                    <div style="text-align: right; margin-top: 0.5rem;">
+                        <a href="#" onclick="openModal('resetModal')" style="color: #667eea; text-decoration: none; font-size: 0.85rem;">Forgot your passcode?</a>
+                    </div>
+
+                    <button type="submit" class="modal-button">Sign In</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                Don't have an account? <a href="#" onclick="switchToRegistration()">Create Account</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Reset Modal -->
+    <div id="resetModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('resetModal')">&times;</span>
+            <div class="modal-header">
+                <div class="logo">🔑</div>
+                <h2>Reset Passcode</h2>
+                <p>Enter your email and new passcode</p>
+            </div>
+            <div class="modal-body">
+                <div class="modal-success" id="resetSuccess">
+                    ✓ Passcode reset successful! You can now sign in with your new passcode.
+                </div>
+
+                <form id="resetForm">
+                    <div class="modal-form-group">
+                        <label for="resetEmail">Email Address</label>
+                        <div class="modal-input-icon">
+                            <span>✉️</span>
+                            <input
+                                type="email"
+                                id="resetEmail"
+                                name="email"
+                                placeholder="your.email@example.com"
+                                required
+                            >
+                        </div>
+                        <div class="modal-error" id="resetEmailError"></div>
+                    </div>
+
+                    <div class="modal-form-group password-group">
+                        <label for="resetPasscode">New Passcode</label>
+                        <div class="modal-input-icon">
+                            <span>🔐</span>
+                            <input
+                                type="password"
+                                id="resetPasscode"
+                                name="passcode"
+                                placeholder="Enter a strong passcode"
+                                required
+                            >
+                            <span class="modal-password-toggle" onclick="toggleModalPassword('resetPasscode')">👁️</span>
+                        </div>
+                        <div class="modal-strength-meter">
+                            <div class="modal-strength-bar" id="resetStrengthBar"></div>
+                        </div>
+                        <div class="modal-strength-text" id="resetStrengthText"></div>
+                        <div class="modal-error" id="resetPasscodeError"></div>
+                    </div>
+
+                    <div class="modal-form-group password-group">
+                        <label for="resetConfirmPasscode">Confirm New Passcode</label>
+                        <div class="modal-input-icon">
+                            <span>🔐</span>
+                            <input
+                                type="password"
+                                id="resetConfirmPasscode"
+                                name="confirmPasscode"
+                                placeholder="Re-enter your passcode"
+                                required
+                            >
+                            <span class="modal-password-toggle" onclick="toggleModalPassword('resetConfirmPasscode')">👁️</span>
+                        </div>
+                        <div class="modal-error" id="resetConfirmError"></div>
+                    </div>
+
+                    <button type="submit" class="modal-button">Reset Passcode</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                Remember your passcode? <a href="#" onclick="switchToLogin()">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intro/Onboarding Modal -->
+    <div id="introOverlay" class="intro-overlay" style="display: none;">
+        <div class="intro-modal">
+            <span class="intro-close" onclick="closeIntro()">&times;</span>
+            <div class="intro-header">
+                <h2>Welcome to AI Hub!</h2>
+            </div>
+            <div class="intro-body">
+                <div class="intro-progress">
+                    <span class="progress-dot active" data-step="1"></span>
+                    <span class="progress-dot" data-step="2"></span>
+                    <span class="progress-dot" data-step="3"></span>
+                    <span class="progress-dot" data-step="4"></span>
+                </div>
+
+                <div id="introStep1" class="intro-step active">
+                    <h3>Step 1: Get Started</h3>
+                    <p>Welcome to AI Hub! This platform offers cutting-edge AI features including intelligent chat, data analysis, and more. Let's take a quick tour to get you familiar with everything.</p>
+                </div>
+
+                <div id="introStep2" class="intro-step">
+                    <h3>Step 2: Sign Up or Sign In</h3>
+                    <p>Create an account to access all features and save your preferences. Click the "Sign Up" button in the top-right corner or in the hero section to get started.</p>
+                </div>
+
+                <div id="introStep3" class="intro-step">
+                    <h3>Step 3: Try AI Chat</h3>
+                    <p>Our AI chatbot can answer questions on virtually any topic by searching the internet. Scroll down to the "Interactive AI Chat" section and start a conversation!</p>
+                </div>
+
+                <div id="introStep4" class="intro-step">
+                    <h3>Step 4: Explore Features</h3>
+                    <p>Discover our AI features like natural language processing, machine learning, image recognition, and more. Each feature card provides information about our capabilities.</p>
+                </div>
+
+                <div class="intro-navigation">
+                    <button class="intro-btn secondary" id="prevBtn" onclick="prevStep()" style="display: none;">Previous</button>
+                    <button class="intro-btn primary" id="nextBtn" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced knowledge base
+        const knowledgeBase = {
+            'what is ai': 'AI (Artificial Intelligence) is the simulation of human intelligence processes by computer systems. It includes learning, reasoning, and self-correction.',
+            'what is machine learning': 'Machine Learning is a subset of AI where systems learn from data and improve their performance without being explicitly programmed.',
+            'hello': 'Hello! I\'m your AI assistant. Ask me anything and I\'ll try to find you an answer!',
+            'hi': 'Hi there! Welcome! Ask me any question and I\'ll do my best to help.',
+            'thanks': 'You\'re welcome! Feel free to ask more questions anytime.',
+            'thank you': 'Happy to help! Is there anything else you\'d like to know?',
+            'bye': 'Goodbye! Thanks for chatting with me. Feel free to come back anytime!',
+            'help': 'I can help answer questions on virtually any topic! Just ask me something and I\'ll search for the answer.',
+        };
+
+        // Response cache to avoid repeated API calls
+        const responseCache = new Map();
+        let isSearching = false;
+
+        async function getAIResponse(userMessage) {
+            try {
+                // Check cache first
+                const cacheKey = userMessage.toLowerCase().trim();
+                if (responseCache.has(cacheKey)) {
+                    return responseCache.get(cacheKey);
+                }
+
+                isSearching = true;
+
+                // Show typing indicator
+                const chatMessages = document.getElementById('chatMessages');
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message ai-message';
+                typingDiv.id = 'typing-indicator';
+                typingDiv.innerHTML = '<p>⏳ Searching the web...</p>';
+                chatMessages.appendChild(typingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // First check local knowledge base
+                const lowerMessage = userMessage.toLowerCase().trim();
+                for (const key in knowledgeBase) {
+                    if (lowerMessage.includes(key)) {
+                        removeTypingIndicator();
+                        isSearching = false;
+                        const answer = knowledgeBase[key];
+                        responseCache.set(cacheKey, answer);
+                        return answer;
+                    }
+                }
+
+                // Try multiple API options
+                let answer = await getFromWikipedia(userMessage);
+                
+                if (!answer || answer.includes('couldn\'t') || answer === null) {
+                    answer = await getFromQuotable(userMessage);
+                }
+
+                removeTypingIndicator();
+                isSearching = false;
+                responseCache.set(cacheKey, answer);
+                return answer;
+
+            } catch (error) {
+                console.error('Error:', error);
+                removeTypingIndicator();
+                isSearching = false;
+                return 'I apologize, but I\'m having trouble finding an answer right now. Please check your internet connection and try again.';
+            }
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        async function getFromWikipedia(query) {
+            try {
+                const searchQuery = query.split(' ').slice(0, 5).join(' ');
+                const response = await fetch(
+                    `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchQuery)}?redirect=true`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'User-Agent': 'AI-Hub/1.0'
+                        },
+                        timeout: 5000
+                    }
+                );
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.extract && data.extract.length > 0) {
+                        let result = data.extract;
+                        if (result.length > 600) {
+                            result = result.substring(0, 600) + '...';
+                        }
+                        return result;
+                    } else if (data.description) {
+                        return data.description;
+                    }
+                }
+
+                return null;
+
+            } catch (error) {
+                console.error('Wikipedia API Error:', error);
+                return null;
+            }
+        }
+
+        async function getFromQuotable(query) {
+            try {
+                // Extract meaningful words from query
+                const words = query.split(' ').filter(w => w.length > 3);
+                if (words.length === 0) {
+                    return 'I\'m not sure I understand. Could you ask a more specific question?';
+                }
+
+                const searchTerm = words[0];
+                const response = await fetch(
+                    `https://api.quotable.io/random?tags=${encodeURIComponent(searchTerm)}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        },
+                        timeout: 5000
+                    }
+                );
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.content) {
+                        return `"${data.content}" — ${data.author}`;
+                    }
+                }
+
+                return 'I couldn\'t find specific information about that. Could you try asking a different question?';
+
+            } catch (error) {
+                console.error('Quotable API Error:', error);
+                return 'I couldn\'t find specific information about that topic. Try asking something else!';
+            }
+        }
+
+        function sendMessage() {
+            if (!navigator.onLine) {
+                alert('Internet connection required to use AI chat. Please check your connection and try again.');
+                return;
+            }
+
+            if (isSearching) {
+                alert('Please wait for the current response to finish!');
+                return;
+            }
+
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (message === '') {
+                alert('Please type a message!');
+                return;
+            }
+
+            const chatMessages = document.getElementById('chatMessages');
+
+            // User message
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-message';
+            userDiv.innerHTML = `<p>${escapeHtml(message)}</p>`;
+            chatMessages.appendChild(userDiv);
+
+            input.value = '';
+            input.focus();
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Get AI response from internet/API
+            getAIResponse(message).then(response => {
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'message ai-message';
+                aiDiv.innerHTML = `<p>${escapeHtml(response)}</p>`;
+                chatMessages.appendChild(aiDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }).catch(error => {
+                console.error('Error:', error);
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'message ai-message';
+                aiDiv.innerHTML = '<p>I apologize, but I encountered an error. Please try again.</p>';
+                chatMessages.appendChild(aiDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function clearChat() {
+            if (confirm('Are you sure you want to clear the chat history?')) {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.innerHTML = '<div class="message ai-message"><p>👋 Chat cleared! Start a new conversation.</p></div>';
+                responseCache.clear();
+            }
+        }
+
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showAlert(feature) {
+            alert(`Learn more about ${feature}!\n\nThis feature is powered by cutting-edge AI technology.`);
+        }
+
+        function handleGetStarted() {
+            const userData = localStorage.getItem('userRegistration');
+            if (userData) {
+                alert('Welcome back to AI Hub! Start chatting with our AI by scrolling down to the AI Chat section.');
+            } else {
+                alert('Welcome to AI Hub! Please sign up or sign in to access all features.');
+                openModal('registrationModal');
+                return;
+            }
+            scrollToSection('chatbot');
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Scroll to top button visibility
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.getElementById('scrollTop');
+            if (window.scrollY > 300) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        // Focus on chat input when page loads
+        window.addEventListener('load', () => {
+            updateUserStatus();
+            updateOnlineStatus();
+            document.getElementById('chatInput').focus();
+        });
+
+        // Online/Offline status handling
+        function updateOnlineStatus() {
+            const chatContainer = document.querySelector('.chatbot-section .container');
+            const chatInput = document.getElementById('chatInput');
+            const chatButton = document.querySelector('.chat-input-area button');
+            const existingBanner = document.querySelector('.offline-banner');
+
+            if (!navigator.onLine) {
+                // Add offline banner if not present
+                if (!existingBanner) {
+                    const banner = document.createElement('div');
+                    banner.className = 'offline-banner';
+                    banner.innerHTML = '<p>⚠️ No internet connection detected. AI chat requires internet access to function.</p>';
+                    chatContainer.insertBefore(banner, chatContainer.firstChild.nextSibling);
+                }
+                // Disable chat input
+                chatInput.disabled = true;
+                chatButton.disabled = true;
+                chatInput.placeholder = 'Internet required for AI chat';
+            } else {
+                // Remove offline banner if present
+                if (existingBanner) {
+                    existingBanner.remove();
+                }
+                // Enable chat input
+                chatInput.disabled = false;
+                chatButton.disabled = false;
+                chatInput.placeholder = 'Type your message...';
+            }
+        }
+
+        // Listen for online/offline events
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function switchToLogin() {
+            closeModal('registrationModal');
+            setTimeout(() => openModal('loginModal'), 300);
+        }
+
+        function switchToRegistration() {
+            closeModal('loginModal');
+            setTimeout(() => openModal('registrationModal'), 300);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const registrationModal = document.getElementById('registrationModal');
+            const loginModal = document.getElementById('loginModal');
+            if (event.target === registrationModal) {
+                closeModal('registrationModal');
+            }
+            if (event.target === loginModal) {
+                closeModal('loginModal');
+            }
+        }
+
+        // User Management Functions
+        function updateUserStatus() {
+            const userData = localStorage.getItem('userRegistration');
+            const userStatusDiv = document.getElementById('userStatus');
+
+            const signUpCta = document.getElementById('signUpCTA');
+            if (userData) {
+                const user = JSON.parse(userData);
+                const email = user.email.split('@')[0]; // Get username part
+                const countryLabel = user.country ? ` (${user.country})` : '';
+                userStatusDiv.innerHTML = `
+                    <span>Welcome, ${email}${countryLabel}!</span>
+                    <button onclick="logout()">Logout</button>
+                `;
+                if (signUpCta) signUpCta.style.display = 'none';
+            } else {
+                userStatusDiv.innerHTML = `
+                    <button onclick="openModal('loginModal')">Sign In</button>
+                    <button onclick="openModal('registrationModal')">Sign Up</button>
+                `;
+                if (signUpCta) signUpCta.style.display = 'inline-block';
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('userRegistration');
+                updateUserStatus();
+                alert('You have been logged out.');
+            }
+        }
+
+        // Feedback handlers
+        function renderFeedback() {
+            const list = document.getElementById('feedbackList');
+            list.innerHTML = '';
+            const saved = JSON.parse(localStorage.getItem('aiFeedback') || '[]');
+            saved.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.time} - ${item.message}`;
+                list.appendChild(li);
+            });
+        }
+
+        function submitFeedback() {
+            const input = document.getElementById('feedbackInput');
+            const value = input.value.trim();
+            if (!value) {
+                alert('Please enter feedback before submitting.');
+                return;
+            }
+            const saved = JSON.parse(localStorage.getItem('aiFeedback') || '[]');
+            saved.unshift({
+                message: value,
+                time: new Date().toLocaleString()
+            });
+            localStorage.setItem('aiFeedback', JSON.stringify(saved));
+            input.value = '';
+            renderFeedback();
+            alert('Thank you! Your feedback has been saved.');
+        }
+
+        function clearFeedback() {
+            if (confirm('Clear all saved feedback?')) {
+                localStorage.removeItem('aiFeedback');
+                renderFeedback();
+            }
+        }
+
+        renderFeedback();
+
+        // Modal Form Functions
+        function toggleModalPassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // Modal Email validation
+        function validateModalEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Modal Phone validation
+        function validateModalPhone(phone) {
+            const phoneRegex = /^[\d\s\-\+\(\)]{7,}$/;
+            return phoneRegex.test(phone.replace(/\s/g, ''));
+        }
+
+        // Modal Passcode strength check
+        function checkModalPasscodeStrength(passcode) {
+            let strength = 0;
+
+            if (passcode.length >= 8) strength++;
+            if (passcode.length >= 12) strength++;
+            if (/[a-z]/.test(passcode)) strength++;
+            if (/[A-Z]/.test(passcode)) strength++;
+            if (/[0-9]/.test(passcode)) strength++;
+            if (/[^a-zA-Z0-9]/.test(passcode)) strength++;
+
+            return strength;
+        }
+
+        // Update modal passcode strength indicator
+        document.getElementById('modalPasscode').addEventListener('input', function() {
+            const strength = checkModalPasscodeStrength(this.value);
+            const strengthBarElement = document.getElementById('modalStrengthBar');
+            const strengthTextElement = document.getElementById('modalStrengthText');
+
+            strengthBarElement.className = 'modal-strength-bar';
+            strengthTextElement.className = 'modal-strength-text';
+
+            if (this.value.length === 0) {
+                strengthBarElement.style.width = '0%';
+                strengthTextElement.textContent = '';
+            } else if (strength <= 2) {
+                strengthBarElement.classList.add('modal-strength-weak');
+                strengthTextElement.classList.add('modal-strength-weak-text');
+                strengthTextElement.textContent = 'Weak passcode';
+            } else if (strength <= 4) {
+                strengthBarElement.classList.add('modal-strength-medium');
+                strengthTextElement.classList.add('modal-strength-medium-text');
+                strengthTextElement.textContent = 'Medium passcode';
+            } else {
+                strengthBarElement.classList.add('modal-strength-strong');
+                strengthTextElement.classList.add('modal-strength-strong-text');
+                strengthTextElement.textContent = 'Strong passcode';
+            }
+        });
+
+        // Clear modal error message
+        function clearModalError(elementId) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.classList.remove('show');
+            errorElement.textContent = '';
+        }
+
+        // Show modal error message
+        function showModalError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        // Modal Registration Form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Clear all errors
+            document.querySelectorAll('#registrationModal .modal-error').forEach(el => {
+                el.classList.remove('show');
+                el.textContent = '';
+            });
+
+            const email = document.getElementById('modalEmail').value.trim();
+            const phone = document.getElementById('modalPhone').value.trim();
+            const country = document.getElementById('modalCountry').value;
+            const passcode = document.getElementById('modalPasscode').value;
+            const confirmPasscode = document.getElementById('modalConfirmPasscode').value;
+            const termsCheckbox = document.getElementById('modalTerms');
+
+            let isValid = true;
+
+            // Validate email
+            if (!email) {
+                showModalError('modalEmailError', 'Email is required');
+                isValid = false;
+            } else if (!validateModalEmail(email)) {
+                showModalError('modalEmailError', 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            // Validate phone
+            if (!phone) {
+                showModalError('modalPhoneError', 'Phone number is required');
+                isValid = false;
+            } else if (!validateModalPhone(phone)) {
+                showModalError('modalPhoneError', 'Please enter a valid phone number');
+                isValid = false;
+            }
+
+            // Validate passcode
+            if (!passcode) {
+                showModalError('modalPasscodeError', 'Passcode is required');
+                isValid = false;
+            } else if (passcode.length < 8) {
+                showModalError('modalPasscodeError', 'Passcode must be at least 8 characters long');
+                isValid = false;
+            } else if (checkModalPasscodeStrength(passcode) <= 2) {
+                showModalError('modalPasscodeError', 'Passcode is too weak. Include uppercase, lowercase, numbers, and symbols');
+                isValid = false;
+            }
+
+            // Validate passcode confirmation
+            if (!confirmPasscode) {
+                showModalError('modalConfirmError', 'Please confirm your passcode');
+                isValid = false;
+            } else if (passcode !== confirmPasscode) {
+                showModalError('modalConfirmError', 'Passcodes do not match');
+                isValid = false;
+            }
+
+            // Validate country
+            if (!country) {
+                showModalError('modalCountryError', 'Please select your country');
+                isValid = false;
+            }
+
+            // Validate terms acceptance
+            if (!termsCheckbox.checked) {
+                showModalError('modalTermsError', 'You must accept the terms and privacy policy');
+                isValid = false;
+            }
+
+            // If valid, show success
+            if (isValid) {
+                const userData = {
+                    email: email,
+                    phone: phone,
+                    country: country,
+                    passcode: passcode,
+                    registeredAt: new Date().toLocaleString()
+                };
+
+                // Store in localStorage
+                localStorage.setItem('userRegistration', JSON.stringify(userData));
+
+                // Show success message
+                document.getElementById('registrationSuccess').classList.add('show');
+
+                // Reset form
+                this.reset();
+                document.getElementById('modalStrengthBar').style.width = '0%';
+                document.getElementById('modalStrengthText').textContent = '';
+
+                // Update user status and close modal
+                setTimeout(() => {
+                    updateUserStatus();
+                    closeModal('registrationModal');
+                    document.getElementById('registrationSuccess').classList.remove('show');
+                    // Advance intro if active
+                    if (document.getElementById('introOverlay').style.display === 'flex' && currentStep === 2) {
+                        nextStep();
+                    }
+                }, 2000);
+            }
+        });
+
+        // Modal Login Form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Clear all errors
+            document.querySelectorAll('#loginModal .modal-error').forEach(el => {
+                el.classList.remove('show');
+                el.textContent = '';
+            });
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const country = document.getElementById('loginCountry').value;
+            const passcode = document.getElementById('loginPasscode').value;
+
+            let isValid = true;
+
+            // Validate email
+            if (!email) {
+                showModalError('loginEmailError', 'Email is required');
+                isValid = false;
+            } else if (!validateModalEmail(email)) {
+                showModalError('loginEmailError', 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            // Validate country
+            if (!country) {
+                showModalError('loginCountryError', 'Please select your country');
+                isValid = false;
+            }
+
+            // Validate passcode
+            if (!passcode) {
+                showModalError('loginPasscodeError', 'Passcode is required');
+                isValid = false;
+            }
+
+            // If valid, check against stored data
+            if (isValid) {
+                const storedData = localStorage.getItem('userRegistration');
+
+                if (storedData) {
+                    const userData = JSON.parse(storedData);
+
+                    if (userData.email === email && userData.passcode === passcode) {
+                        // Show success message
+                        document.getElementById('loginSuccess').classList.add('show');
+
+                        // Reset form
+                        this.reset();
+
+                        // Update user status and close modal
+                        setTimeout(() => {
+                            updateUserStatus();
+                            closeModal('loginModal');
+                            document.getElementById('loginSuccess').classList.remove('show');
+                            // Advance intro if active
+                            if (document.getElementById('introOverlay').style.display === 'flex' && currentStep === 2) {
+                                nextStep();
+                            }
+                        }, 2000);
+                    } else {
+                        showModalError('loginPasscodeError', 'Invalid email or passcode');
+                    }
+                } else {
+                    showModalError('loginEmailError', 'No account found. Please register first.');
+                }
+            }
+        });
+
+        // Real-time modal validation
+        document.getElementById('modalEmail').addEventListener('blur', function() {
+            if (this.value && !validateModalEmail(this.value)) {
+                showModalError('modalEmailError', 'Please enter a valid email address');
+            } else {
+                clearModalError('modalEmailError');
+            }
+        });
+
+        document.getElementById('modalPhone').addEventListener('blur', function() {
+            if (this.value && !validateModalPhone(this.value)) {
+                showModalError('modalPhoneError', 'Please enter a valid phone number');
+            } else {
+                clearModalError('modalPhoneError');
+            }
+        });
+
+        document.getElementById('modalConfirmPasscode').addEventListener('blur', function() {
+            const passcode = document.getElementById('modalPasscode').value;
+            if (this.value && passcode !== this.value) {
+                showModalError('modalConfirmError', 'Passcodes do not match');
+            } else {
+                clearModalError('modalConfirmError');
+            }
+        });
+
+        document.getElementById('loginEmail').addEventListener('blur', function() {
+            if (this.value && !validateModalEmail(this.value)) {
+                showModalError('loginEmailError', 'Please enter a valid email address');
+            } else {
+                clearModalError('loginEmailError');
+            }
+        });
+    </script>
+
+    <!-- Intro/Onboarding JavaScript -->
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function showIntro() {
+            document.getElementById('introOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            currentStep = 1;
+            updateIntroStep();
+        }
+
+        function closeIntro() {
+            document.getElementById('introOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            localStorage.setItem('aiHubIntroSeen', 'true');
+        }
+
+        function updateIntroStep() {
+            // Hide all steps
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById(`introStep${i}`).classList.remove('active');
+                document.querySelector(`.progress-dot[data-step="${i}"]`).classList.remove('active');
+            }
+
+            // Show current step
+            document.getElementById(`introStep${currentStep}`).classList.add('active');
+            document.querySelector(`.progress-dot[data-step="${currentStep}"]`).classList.add('active');
+
+            // Update buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            prevBtn.style.display = currentStep === 1 ? 'none' : 'inline-block';
+
+            if (currentStep === totalSteps) {
+                nextBtn.textContent = 'Get Started!';
+                nextBtn.onclick = closeIntro;
+            } else {
+                nextBtn.textContent = 'Next';
+                nextBtn.onclick = nextStep;
+            }
+
+            // Trigger actions based on current step
+            triggerStepAction(currentStep);
+        }
+
+        function triggerStepAction(step) {
+            switch(step) {
+                case 2:
+                    // Open registration modal
+                    setTimeout(() => {
+                        openModal('registrationModal');
+                    }, 500);
+                    break;
+                case 3:
+                    // Close any open modals and scroll to chatbot
+                    closeModal('registrationModal');
+                    closeModal('loginModal');
+                    setTimeout(() => {
+                        scrollToSection('chatbot');
+                    }, 500);
+                    break;
+                case 4:
+                    // Scroll to features
+                    setTimeout(() => {
+                        scrollToSection('features');
+                    }, 500);
+                    break;
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateIntroStep();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateIntroStep();
+            }
+        }
+
+        // Check if intro has been seen before
+        window.addEventListener('load', () => {
+            updateUserStatus();
+            updateOnlineStatus();
+            document.getElementById('chatInput').focus();
+
+            // Show intro if not seen before
+            if (!localStorage.getItem('aiHubIntroSeen')) {
+                setTimeout(showIntro, 1000); // Delay to let page load
+            }
+        });
+    </script>
+</body>
+</html>

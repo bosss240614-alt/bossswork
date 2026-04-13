@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Finder</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script async src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
     <style>
         * {
             margin: 0;
@@ -190,9 +191,605 @@
         .full-width {
             grid-column: 1 / -1;
         }
+
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .password-modal.hidden {
+            display: none;
+        }
+
+        .password-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .password-card h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        .password-card p {
+            color: #999;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .password-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .password-error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .password-error.show {
+            display: block;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .auth-tab {
+            padding: 10px 15px;
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .auth-content {
+            display: none;
+        }
+
+        .auth-content.active {
+            display: block;
+        }
+
+        .pin-display {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            letter-spacing: 10px;
+            color: #667eea;
+            min-height: 40px;
+        }
+
+        .pin-numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .pin-btn {
+            padding: 15px;
+            font-size: 1.2em;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .pin-btn:hover {
+            border-color: #667eea;
+            background: #f5f5ff;
+        }
+
+        .pin-btn:active {
+            transform: scale(0.95);
+        }
+
+        .pin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pin-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .pin-clear {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .pin-clear:hover {
+            background: #e9ecef;
+        }
+
+        .pin-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .pin-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .face-recognition {
+            text-align: center;
+        }
+
+        #faceVideo {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+            margin: 20px 0;
+            background: #000;
+        }
+
+        .face-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.2s;
+        }
+
+        .face-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .face-status {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .face-status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .face-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .face-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .settings-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 999;
+        }
+
+        .settings-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .settings-modal.active {
+            display: flex;
+        }
+
+        .settings-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .settings-card h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+        }
+
+        .settings-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .settings-input-group {
+            margin-bottom: 12px;
+        }
+
+        .settings-input-group label {
+            display: block;
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .settings-input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9em;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        .settings-input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .settings-input-group input:disabled {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .settings-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .settings-btn-small {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .settings-btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .settings-btn-save:hover {
+            transform: translateY(-2px);
+        }
+
+        .settings-btn-close {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .settings-btn-close:hover {
+            background: #e0e0e0;
+        }
+
+        .settings-message {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.85em;
+            display: none;
+        }
+
+        .settings-message.show {
+            display: block;
+        }
+
+        .settings-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .settings-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
+    <!-- Settings Button -->
+    <button class="settings-btn" onclick="openSettings()" title="Settings">⚙️</button>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal">
+        <div class="settings-card">
+            <h2>⚙️ Settings</h2>
+            
+            <div class="settings-message" id="settingsMessage"></div>
+
+            <div class="settings-section">
+                <h3>🔐 Authentication</h3>
+                <div class="toggle-switch">
+                    <label class="switch">
+                        <input type="checkbox" id="passwordToggle" onchange="togglePasswordProtection()">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="passwordStatus">Disabled</span>
+                </div>
+            </div>
+
+            <div class="settings-section" id="authMethodSection" style="display: none;">
+                <h3>Authentication Method</h3>
+                <div class="settings-input-group">
+                    <label>Choose Method:</label>
+                    <select id="authMethod" onchange="updateAuthMethodUI()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 0.9em;">
+                        <option value="password">🔑 Password</option>
+                        <option value="pin">📱 PIN (4 digits)</option>
+                        <option value="face">👤 Face Recognition</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section" id="passwordSection" style="display: none;">
+                <h3>Change Password</h3>
+                <div class="settings-input-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" placeholder="Enter current password">
+                </div>
+                <div class="settings-input-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password">
+                </div>
+                <div class="settings-input-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                </div>
+            </div>
+
+            <div class="settings-section" id="pinSection" style="display: none;">
+                <h3>Set PIN</h3>
+                <div class="settings-input-group">
+                    <label>Current PIN</label>
+                    <input type="password" id="currentPIN" placeholder="Enter current PIN" maxlength="4" inputmode="numeric">
+                </div>
+                <div class="settings-input-group">
+                    <label>New PIN (4 digits)</label>
+                    <input type="password" id="newPIN" placeholder="Enter new PIN" maxlength="4" inputmode="numeric">
+                </div>
+                <div class="settings-input-group">
+                    <label>Confirm PIN</label>
+                    <input type="password" id="confirmPIN" placeholder="Confirm PIN" maxlength="4" inputmode="numeric">
+                </div>
+            </div>
+
+            <div class="settings-section" id="faceSection" style="display: none;">
+                <h3>👤 Register Face</h3>
+                <p style="font-size: 0.85em; color: #666; margin-bottom: 15px;">Register your face to use facial recognition for authentication</p>
+                
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <video id="settingsFaceVideo" style="width: 100%; max-width: 300px; border-radius: 8px; background: #000; display: none;"></video>
+                    <div id="faceRegistrationStatus" style="margin: 10px 0; font-size: 0.9em;"></div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button class="settings-btn-small settings-btn-save" onclick="startFaceCapture()" style="width: auto; padding: 8px 15px;">Start Camera</button>
+                    <button class="settings-btn-small settings-btn-close" onclick="stopFaceCapture()" style="width: auto; padding: 8px 15px;">Stop</button>
+                </div>
+
+                <button class="settings-btn-small settings-btn-save" onclick="registerFace()" style="width: 100%;">Register Face Now</button>
+                
+                <div id="faceRegistrationStatus2" style="margin-top: 15px; padding: 10px; border-radius: 6px; display: none; font-size: 0.9em;"></div>
+            </div>
+
+            <div class="settings-buttons">
+                <button class="settings-btn-small settings-btn-save" onclick="saveSettings()">Save Changes</button>
+                <button class="settings-btn-small settings-btn-close" onclick="closeSettings()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-card">
+            <h2>🔐 Location Finder</h2>
+            <p>Authenticate to access</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthMethod('password')">🔑 Password</button>
+                <button class="auth-tab" onclick="switchAuthMethod('pin')">📱 PIN</button>
+                <button class="auth-tab" onclick="switchAuthMethod('face')">👤 Face</button>
+            </div>
+
+            <!-- Password Method -->
+            <div id="authPassword" class="auth-content active">
+                <div class="password-error" id="passwordError">❌ Incorrect password</div>
+                <input type="password" id="passwordInput" class="password-input" placeholder="Enter password" onkeypress="if(event.key === 'Enter') checkPassword()">
+                <button class="password-btn" onclick="checkPassword()">Unlock</button>
+            </div>
+
+            <!-- PIN Method -->
+            <div id="authPIN" class="auth-content">
+                <div class="pin-display" id="pinDisplay">****</div>
+                <div class="pin-numpad" id="pinNumpad"></div>
+                <div class="password-error" id="pinError">❌ Incorrect PIN</div>
+                <div class="pin-actions">
+                    <button class="pin-clear" onclick="clearPIN()">Clear</button>
+                    <button class="pin-submit" onclick="checkPIN()">Unlock</button>
+                </div>
+            </div>
+
+            <!-- Face Recognition Method -->
+            <div id="authFace" class="auth-content face-recognition">
+                <p style="color: #666; margin-bottom: 15px;">Look at the camera to unlock</p>
+                <div style="position: relative; display: inline-block; width: 100%; max-width: 300px;">
+                    <video id="faceVideo" autoplay playsinline style="width: 100%; border-radius: 10px; background: #000;"></video>
+                    <canvas id="faceCanvas" style="position: absolute; top: 0; left: 0; display: none;"></canvas>
+                </div>
+                <div id="faceStatus"></div>
+                <button class="face-btn" onclick="startFaceRecognition()">Start Recognition</button>
+                <button class="face-btn" onclick="stopFaceRecognition()">Stop</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h1>🗺️ Location Finder</h1>
 
@@ -454,8 +1051,562 @@
             showStatus(message, 'error');
         }
 
+        // Multi-method Authentication System
+        let DEFAULT_PASSWORD = '1234';
+        let DEFAULT_PIN = '0000';
+        let faceRecognitionActive = false;
+
+        function initPasswordSettings() {
+            // Load settings from localStorage
+            const settings = getSettings();
+            const passwordToggle = document.getElementById('passwordToggle');
+            const passwordStatus = document.getElementById('passwordStatus');
+
+            passwordToggle.checked = settings.enabled;
+            updatePasswordStatus(settings.enabled);
+
+            // Set the auth method select value
+            document.getElementById('authMethod').value = settings.authMethod;
+
+            // Initialize PIN numpad
+            initPINNumpad();
+
+            // Show password modal only if protection is enabled
+            if (settings.enabled) {
+                document.getElementById('passwordModal').classList.remove('hidden');
+                switchAuthMethod(settings.authMethod);
+            } else {
+                document.getElementById('passwordModal').classList.add('hidden');
+                initMap();
+            }
+        }
+
+        function getSettings() {
+            const saved = localStorage.getItem('locationFinderSettings');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return {
+                enabled: false,
+                authMethod: 'password',
+                password: DEFAULT_PASSWORD,
+                pin: DEFAULT_PIN,
+                faceDescriptor: null
+            };
+        }
+
+        function initPINNumpad() {
+            const numpad = document.getElementById('pinNumpad');
+            numpad.innerHTML = '';
+            
+            for (let i = 1; i <= 9; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'pin-btn';
+                btn.textContent = i;
+                btn.onclick = () => addPINDigit(i);
+                numpad.appendChild(btn);
+            }
+
+            const btn0 = document.createElement('button');
+            btn0.className = 'pin-btn';
+            btn0.textContent = '0';
+            btn0.onclick = () => addPINDigit(0);
+            numpad.appendChild(btn0);
+        }
+
+        let currentPIN = '';
+
+        function addPINDigit(digit) {
+            if (currentPIN.length < 4) {
+                currentPIN += digit;
+                updatePINDisplay();
+            }
+        }
+
+        function clearPIN() {
+            currentPIN = '';
+            updatePINDisplay();
+            document.getElementById('pinError').classList.remove('show');
+        }
+
+        function updatePINDisplay() {
+            document.getElementById('pinDisplay').textContent = '●'.repeat(currentPIN.length) + '○'.repeat(4 - currentPIN.length);
+        }
+
+        function checkPIN() {
+            const settings = getSettings();
+            const pinError = document.getElementById('pinError');
+
+            if (currentPIN === settings.pin) {
+                document.getElementById('passwordModal').classList.add('hidden');
+                currentPIN = '';
+                initMap();
+            } else {
+                pinError.classList.add('show');
+                clearPIN();
+                setTimeout(() => {
+                    pinError.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        function switchAuthMethod(method) {
+            // Update tabs
+            document.querySelectorAll('.auth-tab').forEach((tab, index) => {
+                tab.classList.remove('active');
+                if (method === 'password' && index === 0) tab.classList.add('active');
+                else if (method === 'pin' && index === 1) tab.classList.add('active');
+                else if (method === 'face' && index === 2) tab.classList.add('active');
+            });
+
+            // Update content
+            document.querySelectorAll('.auth-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`auth${method.charAt(0).toUpperCase() + method.slice(1)}`).classList.add('active');
+
+            if (method === 'pin') {
+                clearPIN();
+                document.getElementById('pinDisplay').textContent = '○○○○';
+            } else if (method === 'face') {
+                // Face setup will happen when start button is clicked
+            } else {
+                setTimeout(() => {
+                    document.getElementById('passwordInput').focus();
+                }, 100);
+            }
+        }
+
+        function saveSettings() {
+            const settings = getSettings();
+            const authEnabled = document.getElementById('passwordToggle').checked;
+            const authMethod = document.getElementById('authMethod')?.value || 'password';
+
+            const message = document.getElementById('settingsMessage');
+
+            // Handle password change
+            if (authMethod === 'password') {
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (newPassword || confirmPassword) {
+                    if (!currentPassword) {
+                        showSettingsMessage('Please enter current password', 'error');
+                        return;
+                    }
+
+                    if (currentPassword !== settings.password) {
+                        showSettingsMessage('❌ Current password is incorrect', 'error');
+                        return;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        showSettingsMessage('❌ Passwords do not match', 'error');
+                        return;
+                    }
+
+                    if (newPassword.length < 3) {
+                        showSettingsMessage('❌ Password must be at least 3 characters', 'error');
+                        return;
+                    }
+
+                    settings.password = newPassword;
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                }
+            }
+
+            // Handle PIN change
+            if (authMethod === 'pin') {
+                const currentPIN = document.getElementById('currentPIN').value;
+                const newPIN = document.getElementById('newPIN').value;
+                const confirmPIN = document.getElementById('confirmPIN').value;
+
+                if (newPIN || confirmPIN) {
+                    // Only require current PIN if it's not the default PIN
+                    if (settings.pin !== DEFAULT_PIN) {
+                        if (!currentPIN) {
+                            showSettingsMessage('Please enter current PIN', 'error');
+                            return;
+                        }
+
+                        if (currentPIN !== settings.pin) {
+                            showSettingsMessage('❌ Current PIN is incorrect', 'error');
+                            return;
+                        }
+                    }
+
+                    if (newPIN !== confirmPIN) {
+                        showSettingsMessage('❌ PINs do not match', 'error');
+                        return;
+                    }
+
+                    if (newPIN.length !== 4 || !/^\d+$/.test(newPIN)) {
+                        showSettingsMessage('❌ PIN must be 4 digits', 'error');
+                        return;
+                    }
+
+                    if (newPIN === DEFAULT_PIN) {
+                        showSettingsMessage('❌ Please choose a PIN different from the default', 'error');
+                        return;
+                    }
+
+                    settings.pin = newPIN;
+                    document.getElementById('currentPIN').value = '';
+                    document.getElementById('newPIN').value = '';
+                    document.getElementById('confirmPIN').value = '';
+                } else if (settings.pin === DEFAULT_PIN) {
+                    // If no PIN change is specified but PIN is selected and it's still default, require setting a new PIN
+                    showSettingsMessage('Please set a new PIN (current default PIN will be replaced)', 'error');
+                    return;
+                }
+            }
+
+            if (authMethod === 'face' && authEnabled && !settings.faceDescriptor) {
+                showSettingsMessage('❌ Face recognition selected but no face is registered yet.', 'error');
+                return;
+            }
+
+            settings.enabled = authEnabled;
+            settings.authMethod = authMethod;
+            localStorage.setItem('locationFinderSettings', JSON.stringify(settings));
+
+            showSettingsMessage('✅ Settings saved successfully!', 'success');
+
+            setTimeout(() => {
+                closeSettings();
+            }, 1500);
+        }
+
+        function showSettingsMessage(message, type) {
+            const messageEl = document.getElementById('settingsMessage');
+            messageEl.textContent = message;
+            messageEl.className = `settings-message show ${type}`;
+
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 4000);
+        }
+
+        function togglePasswordProtection() {
+            const enabled = document.getElementById('passwordToggle').checked;
+            updatePasswordStatus(enabled);
+        }
+
+        function updatePasswordStatus(enabled) {
+            const statusEl = document.getElementById('passwordStatus');
+            const authMethodSection = document.getElementById('authMethodSection');
+            const passwordSection = document.getElementById('passwordSection');
+            const pinSection = document.getElementById('pinSection');
+            const faceSection = document.getElementById('faceSection');
+
+            if (enabled) {
+                statusEl.textContent = 'Enabled';
+                statusEl.style.color = '#667eea';
+                authMethodSection.style.display = 'block';
+                updateAuthMethodUI();
+            } else {
+                statusEl.textContent = 'Disabled';
+                statusEl.style.color = '#999';
+                authMethodSection.style.display = 'none';
+                passwordSection.style.display = 'none';
+                pinSection.style.display = 'none';
+                faceSection.style.display = 'none';
+            }
+        }
+
+        function updateAuthMethodUI() {
+            const method = document.getElementById('authMethod').value;
+            const passwordSection = document.getElementById('passwordSection');
+            const pinSection = document.getElementById('pinSection');
+            const faceSection = document.getElementById('faceSection');
+
+            passwordSection.style.display = method === 'password' ? 'block' : 'none';
+            pinSection.style.display = method === 'pin' ? 'block' : 'none';
+            faceSection.style.display = method === 'face' ? 'block' : 'none';
+        }
+
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('active');
+            const settings = getSettings();
+            document.getElementById('passwordToggle').checked = settings.enabled;
+            document.getElementById('authMethod').value = settings.authMethod;
+            updatePasswordStatus(settings.enabled);
+            if (settings.enabled) {
+                updateAuthMethodUI();
+            }
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+            stopFaceRecognition();
+        }
+
+        function checkPassword() {
+            const settings = getSettings();
+            const passwordInput = document.getElementById('passwordInput').value;
+            const passwordError = document.getElementById('passwordError');
+
+            if (passwordInput === settings.password) {
+                document.getElementById('passwordModal').classList.add('hidden');
+                initMap();
+            } else {
+                passwordError.classList.add('show');
+                document.getElementById('passwordInput').value = '';
+                setTimeout(() => {
+                    passwordError.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Face Recognition Functions with face-api.js
+        let faceStream = null;
+        let faceInterval = null;
+        let captureStream = null;
+        let captureInterval = null;
+
+        // Load face-api models
+        async function loadFaceModels() {
+            if (!window.faceapi) {
+                return false;
+            }
+            try {
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model/'),
+                    faceapi.nets.faceLandmark68Net.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model/'),
+                    faceapi.nets.faceExpressionNet.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model/'),
+                    faceapi.nets.faceRecognitionNet.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model/')
+                ]);
+                return true;
+            } catch (e) {
+                console.error('Error loading face models:', e);
+                return false;
+            }
+        }
+
+        // Start face capture for registration
+        async function startFaceCapture() {
+            if (!window.faceapi) {
+                showFaceRegistrationMessage('Face detection library not loaded. Please refresh the page.', 'error');
+                return;
+            }
+
+            const statusEl = document.getElementById('faceRegistrationStatus');
+            statusEl.textContent = '📹 Requesting camera access...';
+            statusEl.style.color = '#856404';
+            statusEl.style.backgroundColor = '#fff3cd';
+            statusEl.style.padding = '10px';
+            statusEl.style.borderRadius = '6px';
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                const video = document.getElementById('settingsFaceVideo');
+                video.style.display = 'block';
+                video.srcObject = stream;
+                captureStream = stream;
+
+                statusEl.textContent = '✅ Camera access granted';
+                statusEl.style.backgroundColor = '#d4edda';
+                statusEl.style.color = '#155724';
+            } catch (error) {
+                statusEl.textContent = '❌ Camera access denied';
+                statusEl.style.backgroundColor = '#f8d7da';
+                statusEl.style.color = '#721c24';
+            }
+        }
+
+        // Stop face capture
+        function stopFaceCapture() {
+            if (captureStream) {
+                captureStream.getTracks().forEach(track => track.stop());
+                captureStream = null;
+            }
+            if (captureInterval) {
+                clearInterval(captureInterval);
+            }
+            document.getElementById('settingsFaceVideo').style.display = 'none';
+        }
+
+        // Register face
+        async function registerFace() {
+            if (!window.faceapi) {
+                showFaceRegistrationMessage('Face detection library not loaded.', 'error');
+                return;
+            }
+
+            const video = document.getElementById('settingsFaceVideo');
+            if (!video || !video.srcObject) {
+                showFaceRegistrationMessage('Please start camera first', 'error');
+                return;
+            }
+
+            showFaceRegistrationMessage('📍 Detecting face...', 'loading');
+
+            try {
+                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).
+                    withFaceLandmarks().
+                    withFaceDescriptors();
+
+                if (detections.length === 0) {
+                    showFaceRegistrationMessage('❌ No face detected. Please try again.', 'error');
+                    return;
+                }
+
+                if (detections.length > 1) {
+                    showFaceRegistrationMessage('❌ Multiple faces detected. Only one face should be visible.', 'error');
+                    return;
+                }
+
+                // Store the face descriptor
+                const descriptor = Array.from(detections[0].descriptor);
+                const settings = getSettings();
+                settings.faceDescriptor = descriptor;
+                localStorage.setItem('locationFinderSettings', JSON.stringify(settings));
+
+                showFaceRegistrationMessage('✅ Face registered successfully!', 'success');
+                stopFaceCapture();
+            } catch (error) {
+                console.error('Error registering face:', error);
+                showFaceRegistrationMessage('❌ Error registering face: ' + error.message, 'error');
+            }
+        }
+
+        function showFaceRegistrationMessage(message, type) {
+            const statusEl = document.getElementById('faceRegistrationStatus2');
+            statusEl.textContent = message;
+            statusEl.style.display = 'block';
+            
+            if (type === 'error') {
+                statusEl.style.backgroundColor = '#f8d7da';
+                statusEl.style.color = '#721c24';
+                statusEl.style.border = '1px solid #f5c6cb';
+            } else if (type === 'success') {
+                statusEl.style.backgroundColor = '#d4edda';
+                statusEl.style.color = '#155724';
+                statusEl.style.border = '1px solid #c3e6cb';
+            } else {
+                statusEl.style.backgroundColor = '#fff3cd';
+                statusEl.style.color = '#856404';
+                statusEl.style.border = '1px solid #ffeaa7';
+            }
+
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 4000);
+            }
+        }
+
+        async function startFaceRecognition() {
+            const faceStatus = document.getElementById('faceStatus');
+            
+            try {
+                // Load models if not already loaded
+                const modelsLoaded = await loadFaceModels();
+                if (!modelsLoaded) {
+                    faceStatus.textContent = '❌ Face detection not available';
+                    faceStatus.className = 'face-status error';
+                    return;
+                }
+
+                faceStatus.textContent = '📹 Requesting camera access...';
+                faceStatus.className = 'face-status loading';
+
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                const video = document.getElementById('faceVideo');
+                video.srcObject = stream;
+                faceStream = stream;
+                faceRecognitionActive = true;
+
+                faceStatus.textContent = '👀 Detecting your face...';
+
+                // Detect face and compare with registered
+                const settings = getSettings();
+                if (!settings.faceDescriptor) {
+                    faceStatus.textContent = '❌ No face registered. Please register a face first.';
+                    faceStatus.className = 'face-status error';
+                    stopFaceRecognition();
+                    return;
+                }
+
+                let detectionAttempts = 0;
+                faceInterval = setInterval(async () => {
+                    try {
+                        detectionAttempts++;
+                        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+                            .withFaceLandmarks()
+                            .withFaceDescriptors();
+
+                        if (detections.length === 0) {
+                            if (detectionAttempts <= 12) {
+                                faceStatus.textContent = '👀 Looking for your face... (' + detectionAttempts + 's)';
+                            } else {
+                                faceStatus.textContent = '❌ Face not detected. Try again.';
+                                faceStatus.className = 'face-status error';
+                                stopFaceRecognition();
+                                clearInterval(faceInterval);
+                            }
+                            return;
+                        }
+
+                        // Compare current face with registered face
+                        const currentDescriptor = detections[0].descriptor;
+                        const registeredDescriptor = new Float32Array(settings.faceDescriptor);
+                        const distance = faceapi.euclideanDistance(currentDescriptor, registeredDescriptor);
+
+                        // Distance threshold: lower means more similar (typical range 0.3-0.7)
+                        if (distance < 0.6) {
+                            verifyFaceSuccess(faceStatus);
+                            clearInterval(faceInterval);
+                        } else if (detectionAttempts > 12) {
+                            faceStatus.textContent = '❌ Face not recognized. Try again.';
+                            faceStatus.className = 'face-status error';
+                            stopFaceRecognition();
+                            clearInterval(faceInterval);
+                        }
+                    } catch (e) {
+                        console.error('Error during face detection:', e);
+                    }
+                }, 500);
+            } catch (error) {
+                faceStatus.textContent = '❌ Camera access denied';
+                faceStatus.className = 'face-status error';
+            }
+        }
+
+        function verifyFaceSuccess(faceStatus) {
+            stopFaceRecognition();
+            faceStatus.textContent = '✅ Face recognized! Unlocking...';
+            faceStatus.className = 'face-status success';
+
+            setTimeout(() => {
+                document.getElementById('passwordModal').classList.add('hidden');
+                initMap();
+            }, 1500);
+        }
+
+        function stopFaceRecognition() {
+            if (faceStream) {
+                faceStream.getTracks().forEach(track => track.stop());
+                faceStream = null;
+            }
+            if (faceInterval) {
+                clearInterval(faceInterval);
+            }
+            faceRecognitionActive = false;
+            const faceStatus = document.getElementById('faceStatus');
+            faceStatus.textContent = '';
+        }
+
         // Initialize on page load
-        window.addEventListener('load', initMap);
+        window.addEventListener('load', () => {
+            initPasswordSettings();
+            loadFaceModels(); // Pre-load face detection models in background
+            const passwordInput = document.getElementById('passwordInput');
+            if (passwordInput && !document.getElementById('passwordModal').classList.contains('hidden')) {
+                passwordInput.focus();
+            }
+        });
     </script>
 </body>
 </html>

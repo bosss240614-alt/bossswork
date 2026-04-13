@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmation - Bosss'N'Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f5f9;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --accent: #f59e0b;
+      --border: #e2e8f0;
+      --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+      --success: #10b981;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 12px 20px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--primary);
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    .confirmation-container {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 60px 40px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 3px solid var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 40px;
+    }
+
+    .confirmation-container h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      color: var(--text);
+    }
+
+    .confirmation-container p {
+      color: var(--muted);
+      font-size: 16px;
+      margin: 0 0 32px;
+      line-height: 1.6;
+    }
+
+    .order-id {
+      background: rgba(37, 99, 235, 0.05);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 24px 0;
+      font-size: 14px;
+    }
+
+    .order-id .label {
+      color: var(--muted);
+      font-weight: 500;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .order-id .value {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--primary);
+      font-family: 'Courier New', monospace;
+    }
+
+    .order-details {
+      margin: 32px 0;
+      text-align: left;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .detail-section h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-section p {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .detail-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .order-items {
+      margin-top: 32px;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      text-align: left;
+    }
+
+    .order-items h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .order-item:last-child {
+      border-bottom: none;
+    }
+
+    .order-item .name {
+      font-weight: 500;
+    }
+
+    .order-item .qty {
+      color: var(--muted);
+    }
+
+    .order-item .price {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .order-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 0;
+      font-size: 16px;
+      font-weight: 700;
+      border-top: 2px solid var(--border);
+      margin-top: 12px;
+    }
+
+    .order-total .amount {
+      color: var(--primary);
+    }
+
+    .next-steps {
+      background: #f0f9ff;
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 32px 0;
+      text-align: left;
+    }
+
+    .next-steps h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin: 0 0 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .next-steps ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .next-steps li {
+      margin-bottom: 8px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 32px;
+    }
+
+    .btn {
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .confirmation-container {
+        padding: 40px 20px;
+      }
+
+      .order-details {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top-bar">
+      <div class="logo">Bosss'N'Store</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="confirmation-container">
+      <div class="success-icon">✓</div>
+      
+      <h1>Order Confirmed!</h1>
+      <p>Thank you for your purchase. Your order has been successfully placed and will be processed shortly.</p>
+
+      <div class="order-id">
+        <div class="label">Order ID</div>
+        <div class="value" id="orderId">ORD-0000000000</div>
+      </div>
+
+      <div class="order-details" id="orderDetails">
+        <!-- Order details will be populated here -->
+      </div>
+
+      <div class="order-items" id="orderItems">
+        <!-- Order items will be populated here -->
+      </div>
+
+      <div class="next-steps">
+        <h3>What happens next?</h3>
+        <ol>
+          <li><strong>Order Confirmation:</strong> You'll receive an email confirmation with your order details</li>
+          <li><strong>Processing:</strong> We'll process your order and prepare it for shipment</li>
+          <li><strong>Shipping:</strong> You'll receive a tracking number via email once your package ships</li>
+          <li><strong>Delivery:</strong> Your order will arrive at your specified address within the estimated timeframe</li>
+        </ol>
+      </div>
+
+      <div class="button-group">
+        <a href="Bosss'N'Store.html" class="btn btn-primary">Continue Shopping</a>
+        <a href="cart.html" class="btn btn-secondary">View Cart</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Bosss'N'Store. All rights reserved. Thank you for shopping with us!</p>
+  </footer>
+
+  <script>
+    // Get order ID from URL
+    function getOrderIdFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('orderId');
+    }
+
+    // Load and display order details
+    function loadOrderDetails() {
+      const orderId = getOrderIdFromUrl();
+      if (!orderId) {
+        window.location.href = 'Bosss\'N\'Store.html';
+        return;
+      }
+
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+      const order = orders.find(o => o.id === orderId);
+
+      if (!order) {
+        document.querySelector('.confirmation-container').innerHTML = `
+          <h1>Order Not Found</h1>
+          <p>We couldn't find the order you're looking for. It may have been deleted or there was an error.</p>
+          <a href="Bosss'N'Store.html" class="btn btn-primary" style="margin-top: 16px;">Return to Store</a>
+        `;
+        return;
+      }
+
+      // Display order ID
+      document.getElementById('orderId').textContent = order.id;
+
+      // Display order details
+      const orderDetailsHtml = `
+        <div class="detail-section">
+          <h3>Shipping Address</h3>
+          <p><strong>${order.customer.name}</strong></p>
+          <p>${order.customer.address}</p>
+          <p>${order.customer.city}, ${order.customer.state} ${order.customer.zipcode}</p>
+          <p>${order.customer.country}</p>
+          <p>Email: ${order.customer.email}</p>
+          <p>Phone: ${order.customer.phone}</p>
+        </div>
+        <div class="detail-section">
+          <h3>Order Summary</h3>
+          <p>Order Date: ${order.date}</p>
+          <p>Shipping Method: ${order.shipping === 'standard' ? 'Standard (5-7 days)' : order.shipping === 'express' ? 'Express (2-3 days)' : 'Overnight'}</p>
+          <p>Payment Method: ${order.payment === 'card' ? 'Credit Card' : order.payment === 'paypal' ? 'PayPal' : 'Apple Pay'}</p>
+          <p>Order Status: <strong style="color: var(--primary);">Pending Processing</strong></p>
+        </div>
+      `;
+      document.getElementById('orderDetails').innerHTML = orderDetailsHtml;
+
+      // Display order items
+      let itemsHtml = '<h3>Order Items</h3>';
+      let shippingCost = 0;
+      let subtotal = 0;
+
+      order.items.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        itemsHtml += `
+          <div class="order-item">
+            <div>
+              <div class="name">${item.name}</div>
+              <div class="qty">Quantity: ${item.quantity}</div>
+            </div>
+            <div class="price">$${itemTotal.toFixed(2)}</div>
+          </div>
+        `;
+      });
+
+      if (order.shipping === 'express') shippingCost = 10;
+      if (order.shipping === 'overnight') shippingCost = 25;
+
+      const tax = (subtotal + shippingCost) * 0.1;
+      const total = subtotal + shippingCost + tax;
+
+      itemsHtml += `
+        <div class="order-item">
+          <div>Subtotal</div>
+          <div class="price">$${subtotal.toFixed(2)}</div>
+        </div>
+        <div class="order-item">
+          <div>Shipping (${order.shipping})</div>
+          <div class="price">$${shippingCost.toFixed(2)}</div>
+        </div>
+        <div class="order-item">
+          <div>Tax (10%)</div>
+          <div class="price">$${tax.toFixed(2)}</div>
+        </div>
+        <div class="order-total">
+          <span>Total</span>
+          <span class="amount">${order.total}</span>
+        </div>
+      `;
+
+      document.getElementById('orderItems').innerHTML = itemsHtml;
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', loadOrderDetails);
+  </script>
+</body>
+</html>

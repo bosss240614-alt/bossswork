@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Chat</title>
+  <style>
+    :root {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #eef2f7;
+      color: #111827;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chat-app {
+      width: min(760px, 100%);
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 24px 50px rgba(15, 23, 42, 0.14);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .chat-header {
+      padding: 24px;
+      background: linear-gradient(135deg, #4f46e5, #2563eb);
+      color: white;
+    }
+
+    .chat-header h1 {
+      margin: 0 0 8px;
+      font-size: 1.6rem;
+    }
+
+    .chat-header p {
+      margin: 0;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+
+    .chat-header .user-field {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .chat-header input {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+    }
+
+    .chat-header button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      background: #fbbf24;
+      color: #111827;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .messages {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 520px;
+      overflow-y: auto;
+      background: #f8fafc;
+    }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+    }
+
+    .message .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.95rem;
+      color: #6b7280;
+    }
+
+    .message .text {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 1rem;
+      color: #111827;
+    }
+
+    .composer {
+      padding: 20px;
+      background: #f8fafc;
+      display: grid;
+      gap: 12px;
+    }
+
+    .composer textarea {
+      width: 100%;
+      min-height: 100px;
+      border-radius: 18px;
+      border: 1px solid #d1d5db;
+      padding: 16px;
+      resize: vertical;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .composer button {
+      justify-self: end;
+      border: none;
+      border-radius: 16px;
+      background: #2563eb;
+      color: white;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .chat-footer {
+      padding: 18px 24px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.95rem;
+      background: #ffffff;
+    }
+
+    .chat-footer a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="chat-app">
+    <section class="chat-header">
+      <h1>Web Chat</h1>
+      <p>Type a name, send a message, and chat with others who open this page in another tab or window.</p>
+      <div class="user-field">
+        <input id="nameInput" type="text" placeholder="Enter your display name" maxlength="20" />
+        <button id="saveName">Save</button>
+      </div>
+    </section>
+
+    <section class="messages" id="messageList" aria-live="polite"></section>
+
+    <section class="composer">
+      <textarea id="messageInput" placeholder="Write your message..." rows="4"></textarea>
+      <button id="sendButton">Send Message</button>
+    </section>
+  </main>
+  <div class="chat-footer">
+    Chat is shared over this browser origin using browser storage. <a href="index.html">Back to home</a>
+  </div>
+
+  <script>
+    const storageKey = 'simpleWebChatMessages';
+    const nameInput = document.getElementById('nameInput');
+    const saveNameButton = document.getElementById('saveName');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const messageList = document.getElementById('messageList');
+
+    let visitorName = localStorage.getItem('chatVisitorName') || '';
+    nameInput.value = visitorName;
+
+    function getMessages() {
+      const stored = localStorage.getItem(storageKey);
+      return stored ? JSON.parse(stored) : [];
+    }
+
+    function saveMessages(messages) {
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+      if (typeof BroadcastChannel !== 'undefined') {
+        channel.postMessage({ type: 'update' });
+      }
+    }
+
+    function renderMessages() {
+      const messages = getMessages();
+      messageList.innerHTML = messages.map(message => {
+        const time = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return `
+          <article class="message">
+            <div class="meta"><span>${escapeHtml(message.name)}</span><span>${time}</span></div>
+            <div class="text">${escapeHtml(message.text)}</div>
+          </article>
+        `;
+      }).join('');
+      messageList.scrollTop = messageList.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function updateName() {
+      visitorName = nameInput.value.trim() || 'Guest';
+      localStorage.setItem('chatVisitorName', visitorName);
+      alert(`Name saved as ${visitorName}`);
+    }
+
+    function addMessage() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+      const messages = getMessages();
+      messages.push({
+        id: Date.now(),
+        name: visitorName || 'Guest',
+        text,
+        timestamp: new Date().toISOString()
+      });
+      saveMessages(messages.slice(-100));
+      messageInput.value = '';
+      renderMessages();
+    }
+
+    saveNameButton.addEventListener('click', updateName);
+    sendButton.addEventListener('click', addMessage);
+    messageInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        addMessage();
+      }
+    });
+
+    window.addEventListener('storage', event => {
+      if (event.key === storageKey) {
+        renderMessages();
+      }
+    });
+
+    const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('simple-web-chat') : null;
+    if (channel) {
+      channel.onmessage = event => {
+        if (event.data && event.data.type === 'update') renderMessages();
+      };
+    }
+
+    if (!visitorName) {
+      visitorName = prompt('Please enter your name for chat:')?.trim() || 'Guest';
+      nameInput.value = visitorName;
+      localStorage.setItem('chatVisitorName', visitorName);
+    }
+
+    renderMessages();
+  </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>School Panorama: Front Desk → SS3</title>
+  <style>
+    body, html { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .panorama { width: 100vw; height: 100vh; overflow: hidden; position: relative; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; }
+    .scene { width: 95vw; max-width: 1200px; height: 70vh; border-radius: 16px; box-shadow: 0 12px 36px rgba(0,0,0,.6); background-size: cover; background-position: center; position: relative; display: grid; place-items: center; }
+    .label-box { position: absolute; bottom: 24px; left: 24px; background: rgba(0,0,0,.64); border: 1px solid rgba(255,255,255,.25); backdrop-filter: blur(4px); padding: 16px 20px; border-radius: 12px; }
+    .label-box h1 { margin: 0 0 8px; font-size: 26px; }
+    .label-box p { margin: 0; font-size: 16px; opacity: .90; }
+    .nav-buttons { position: absolute; width: calc(100% - 40px); left: 20px; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; pointer-events: none; }
+    .btn-arrow { pointer-events: auto; width: 60px; height: 60px; border-radius: 999px; border: 2px solid #fff; color: #fff; background: rgba(0,0,0,.45); font-size: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform .18s ease, background .18s ease; }
+    .btn-arrow:hover { transform: scale(1.08); background: rgba(0,0,0,.7); }
+    .scene-nav-container { position: absolute; top: 18px; right: 18px; z-index: 10; display: flex; flex-direction: column; align-items: flex-end; }
+    .scene-nav-btn { border: 2px solid #fff; background: rgba(0,0,0,.55); color: #fff; border-radius: 10px; padding: 10px 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
+    .scene-nav-list { position: absolute; top: 54px; right: 0; max-height: 320px; overflow-y: auto; background: rgba(18,18,18,.92); border: 1px solid rgba(255,255,255,.35); border-radius: 10px; padding: 12px; display: none; width: 210px; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+    .scene-nav-list.open { display: block; }
+    .scene-nav-list button { width: 100%; margin-bottom: 8px; border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.08); color: #fff; padding: 8px 10px; border-radius: 8px; text-align: left; cursor: pointer; }
+    .scene-nav-list button:hover { background: rgba(255,255,255,.18); }
+    .footer { position: absolute; bottom: 12px; width: 100%; text-align: center; font-size: 14px; color: #ccc; }
+  </style>
+</head>
+<body>
+  <section class="panorama" tabindex="0" id="panorama">
+    <div class="scene" id="scene"></div>
+    <div class="scene-nav-container">
+      <button id="navToggle" class="scene-nav-btn" aria-expanded="false">Nav Bar</button>
+      <div id="sceneNav" class="scene-nav-list" aria-label="Scene navigation"></div>
+    </div>
+    <div class="label-box">
+      <h1 id="sceneTitle">Front Desk</h1>
+      <p id="sceneDescription">Welcome to the front desk. This is the school’s reception and visitor welcome area.</p>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-arrow" id="prevBtn" aria-label="Previous">◀</button>
+      <button class="btn-arrow" id="nextBtn" aria-label="Next">▶</button>
+    </div>
+    <div class="footer">Use left/right arrows or keyboard keys to move through the school panorama.</div>
+  </section>
+
+  <script>
+    const scenes = [
+      { title: 'Front Desk', description: 'Welcome to the front desk. This is the school’s reception and visitor welcome area.', bg: 'linear-gradient(120deg,#0d4a84,#1d84c5) url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80")' },
+      { title: 'Main Corridor', description: 'Walk down the main corridor that leads to classrooms and admin offices.', bg: 'linear-gradient(120deg,#3a4d61,#6f8290) url("https://images.unsplash.com/photo-158570247489-5ae5e627518a?auto=format&fit=crop&w=1400&q=80")' },
+      { title: 'Library', description: 'The school library is quiet with rows of books and study tables.', bg: 'linear-gradient(120deg,#2e3b55,#5a749f) url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1400&q=80")' },
+      { title: 'JSS1 Classroom', description: 'Junior Secondary School 1 (JSS1) classroom with colorful designs.', bg: 'linear-gradient(120deg,#5b8d5e,#8dc190) url("https://images.unsplash.com/photo-1559757175-5705892e75bd?auto=format&fit=crop&w=1400&q=80")' },
+      { title: 'JSS2 Classroom', description: 'Junior Secondary School 2 (JSS2) classroom with smart board and students at work.', bg: 'linear-gradient(120deg,#754a9c,#a678d7) url("https://images.unsplash.com/photo-1520697222862-2f2cf18fdc4a?auto=format&fit=crop&w=1400&q=80")' },
+      { title: 'JSS3 Classroom', description: 'Junior Secondary School 3 (JSS3) classroom. Last scene in the campus tour.', bg: 'linear-gradient(120deg,#8e4f38,#ce8f62) url("https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1400&q=80")' },
+      { title: 'SS1 Classroom', description: 'Secondary School 1 (SS1) classroom. Learning and teamwork happen here.', bg: 'linear-gradient(120deg,#5b8d5e,#8dc190) url("https://images.unsplash.com/photo-1580291962218-2d0af4c6d93a?auto=format&fit=crop&w=1400&q=80")' },
+      { title: 'SS2 Classroom', description: 'Secondary School 2 (SS2) classroom with smart boards and student tables.', bg: 'linear-gradient(120deg,#754a9c,#a678d7) url("https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=1400&q=80")' },
+      { title: 'SS3 Classroom', description: 'Secondary School 3 (SS3) classroom. Final stop in the panorama tour.', bg: 'linear-gradient(120deg,#8e4f38,#ce8f62) url("https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=1400&q=80")' }
+    ];
+
+    let current = 0;
+
+    const sceneEl = document.getElementById('scene');
+    const titleEl = document.getElementById('sceneTitle');
+    const descEl = document.getElementById('sceneDescription');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const root = document.getElementById('panorama');
+    const navToggle = document.getElementById('navToggle');
+    const sceneNav = document.getElementById('sceneNav');
+
+    function render() {
+      const scene = scenes[current];
+      sceneEl.style.background = scene.bg;
+      titleEl.textContent = scene.title;
+      descEl.textContent = scene.description;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === scenes.length - 1;
+      prevBtn.style.opacity = prevBtn.disabled ? '0.38' : '1';
+      nextBtn.style.opacity = nextBtn.disabled ? '0.38' : '1';
+    }
+
+    function go(delta) {
+      current = Math.min(scenes.length - 1, Math.max(0, current + delta));
+      render();
+    }
+
+    prevBtn.addEventListener('click', () => go(-1));
+    nextBtn.addEventListener('click', () => go(1));
+
+    function buildSceneNav() {
+      sceneNav.innerHTML = scenes.map((scene, idx) =>
+        `<button type="button" data-index="${idx}">${scene.title}</button>`
+      ).join('');
+    }
+
+    navToggle.addEventListener('click', () => {
+      const open = sceneNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', String(open));
+    });
+
+    sceneNav.addEventListener('click', e => {
+      const target = e.target;
+      if (target.matches('button[data-index]')) {
+        current = Number(target.dataset.index);
+        render();
+        sceneNav.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    root.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') go(-1);
+      if (e.key === 'ArrowRight') go(1);
+    });
+
+    buildSceneNav();
+    render();
+    root.focus();
+  </script>
+</body>
+</html>

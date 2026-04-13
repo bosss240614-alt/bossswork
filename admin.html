@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bosss'N'Store Admin</title>
+  <style>
+    :root {
+      --bg: #f3f5f9;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --accent: #f59e0b;
+      --border: #e2e8f0;
+      --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+      --success: #10b981;
+      --danger: #ef4444;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .admin-container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--surface);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .login-section,
+    .dashboard-section {
+      padding: 40px;
+    }
+
+    .login-section {
+      text-align: center;
+    }
+
+    .login-section h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+      color: var(--primary);
+    }
+
+    .login-section p {
+      margin: 0 0 32px;
+      color: var(--muted);
+    }
+
+    .login-form {
+      display: grid;
+      gap: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .login-form input {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .login-form button {
+      background: var(--primary);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s;
+    }
+
+    .login-form button:hover {
+      background: #1d4ed8;
+    }
+
+    .login-form button:active {
+      transform: scale(0.98);
+    }
+
+    .dashboard-section {
+      display: none;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dashboard-header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .logout-btn {
+      background: var(--danger);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.1s;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+
+    .logout-btn:active {
+      transform: scale(0.95);
+    }
+
+    .orders-list {
+      display: grid;
+      gap: 20px;
+    }
+
+    .order-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .order-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .order-status {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: #d97706;
+    }
+
+    .status-accepted {
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+    }
+
+    .status-declined {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+    }
+
+    .order-details {
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .accept-btn {
+      background: var(--success);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.1s;
+    }
+
+    .accept-btn:hover {
+      background: #059669;
+    }
+
+    .accept-btn:active {
+      transform: scale(0.95);
+    }
+
+    .decline-btn {
+      background: var(--danger);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.1s;
+    }
+
+    .decline-btn:hover {
+      background: #dc2626;
+    }
+
+    .decline-btn:active {
+      transform: scale(0.95);
+    }
+
+    .no-orders {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+    }
+
+    .footer {
+      padding: 20px 40px;
+      text-align: center;
+      background: #f8fafc;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .order-reason {
+      background: #f0f9ff;
+      border-left: 4px solid var(--primary);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .order-reason strong {
+      display: block;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--surface);
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      width: 90%;
+      max-width: 500px;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      margin-bottom: 24px;
+    }
+
+    .modal-header h2 {
+      margin: 0 0 8px;
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .modal-body {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .modal-body textarea {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 120px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .modal-body textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .modal-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.3s, transform 0.1s;
+    }
+
+    .modal-confirm-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    .modal-confirm-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .modal-confirm-btn:active {
+      transform: scale(0.95);
+    }
+
+    .modal-cancel-btn {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .modal-cancel-btn:hover {
+      background: #cbd5e1;
+    }
+
+    .accept-btn:disabled,
+    .decline-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .modal-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Toast Notifications */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      z-index: 1001;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      max-width: 300px;
+      word-wrap: break-word;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast-success {
+      background-color: #10b981;
+    }
+
+    .toast-error {
+      background-color: #ef4444;
+    }
+
+    .toast-info {
+      background-color: var(--primary);
+    }
+
+    @media(max-width: 600px) {
+      .login-section,
+      .dashboard-section {
+        padding: 20px;
+      }
+
+      .dashboard-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .order-actions {
+        flex-direction: column;
+      }
+
+      .modal-content {
+        width: 95%;
+        padding: 24px;
+      }
+
+      .toast {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="admin-container">
+    <section class="login-section" id="loginSection">
+      <h1>Bosss'N'Store Admin</h1>
+      <p>Log in to manage orders and oversee the store.</p>
+      <form class="login-form" id="loginForm">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Log In</button>
+      </form>
+    </section>
+
+    <section class="dashboard-section" id="dashboardSection">
+      <div class="dashboard-header">
+        <h2>Order Management</h2>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+      </div>
+
+      <div class="orders-list" id="ordersList">
+        <!-- Orders will be populated here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Reason Modal -->
+  <div id="reasonModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Enter Reason</h2>
+      </div>
+      <div class="modal-body">
+        <textarea id="reasonInput" placeholder="Please explain your decision..." required></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-cancel-btn" onclick="closeReasonModal()">Cancel</button>
+        <button class="modal-btn modal-confirm-btn" onclick="submitReason()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a href="Bosss'N'Store.html">Back to Store</a>
+  </div>
+
+  <script>
+    // Mock admin credentials
+    const adminCredentials = { username: 'admin', password: 'admin123' };
+
+    // State for modal
+    let pendingActionData = {
+      orderId: null,
+      status: null
+    };
+
+    // Mock orders data
+    let orders = JSON.parse(localStorage.getItem('storeOrders')) || [
+      {
+        id: 1,
+        customer: 'John Doe',
+        email: 'john@example.com',
+        items: ['UltraPhone X12', 'City Runner Sneakers'],
+        total: '$578',
+        status: 'pending',
+        date: '2024-04-10',
+        reason: ''
+      },
+      {
+        id: 2,
+        customer: 'Jane Smith',
+        email: 'jane@example.com',
+        items: ['Signature Scent', 'Kitchen Pro Blender'],
+        total: '$163',
+        status: 'pending',
+        date: '2024-04-11',
+        reason: ''
+      },
+      {
+        id: 3,
+        customer: 'Bob Johnson',
+        email: 'bob@example.com',
+        items: ['UltraPhone X12'],
+        total: '$499',
+        status: 'pending',
+        date: '2024-04-11',
+        reason: ''
+      }
+    ];
+
+    const loginSection = document.getElementById('loginSection');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const loginForm = document.getElementById('loginForm');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const ordersList = document.getElementById('ordersList');
+    const reasonModal = document.getElementById('reasonModal');
+    const reasonInput = document.getElementById('reasonInput');
+    const modalTitle = document.getElementById('modalTitle');
+
+    // Check if admin is logged in
+    if (localStorage.getItem('adminLoggedIn') === 'true') {
+      showDashboard();
+    }
+
+    // Login form submit
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if (username === adminCredentials.username && password === adminCredentials.password) {
+        localStorage.setItem('adminLoggedIn', 'true');
+        showDashboard();
+      } else {
+        alert('Invalid credentials. Try username: admin, password: admin123');
+      }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('adminLoggedIn');
+      showLogin();
+    });
+
+    // Modal click outside to close
+    reasonModal.addEventListener('click', (e) => {
+      if (e.target === reasonModal) {
+        closeReasonModal();
+      }
+    });
+
+    // Modal keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (reasonModal.classList.contains('show')) {
+        if (e.key === 'Escape') {
+          closeReasonModal();
+        } else if (e.key === 'Enter' && !e.shiftKey) {
+          submitReason();
+        }
+      }
+    });
+
+    // Prevent form submission on Enter in textarea
+    reasonInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitReason();
+      }
+    });
+
+    function showDashboard() {
+      loginSection.style.display = 'none';
+      dashboardSection.style.display = 'block';
+      renderOrders();
+    }
+
+    function showLogin() {
+      dashboardSection.style.display = 'none';
+      loginSection.style.display = 'block';
+    }
+
+    function renderOrders() {
+      if (orders.length === 0) {
+        ordersList.innerHTML = '<div class="no-orders">No orders to manage at this time.</div>';
+        return;
+      }
+
+      ordersList.innerHTML = orders.map(order => `
+        <article class="order-card">
+          <div class="order-header">
+            <h3>Order #${order.id} - ${order.customer}</h3>
+            <span class="order-status status-${order.status}">${order.status}</span>
+          </div>
+          <div class="order-details">
+            <div><strong>Email:</strong> ${order.email}</div>
+            <div><strong>Items:</strong> ${order.items.join(', ')}</div>
+            <div><strong>Total:</strong> ${order.total}</div>
+            <div><strong>Date:</strong> ${order.date}</div>
+          </div>
+          ${order.reason ? `
+            <div class="order-reason">
+              <strong>Reason:</strong>
+              ${order.reason}
+            </div>
+          ` : ''}
+          ${order.status === 'pending' ? `
+            <div class="order-actions">
+              <button class="accept-btn" data-order-id="${order.id}" data-action="accepted">Accept</button>
+              <button class="decline-btn" data-order-id="${order.id}" data-action="declined">Decline</button>
+            </div>
+          ` : ''}
+        </article>
+      `).join('');
+
+      // Add event listeners to the buttons
+      document.querySelectorAll('.accept-btn, .decline-btn').forEach(button => {
+        button.addEventListener('click', handleOrderAction);
+      });
+    }
+
+    function handleOrderAction(event) {
+      const button = event.target;
+      const orderId = parseInt(button.getAttribute('data-order-id'));
+      const action = button.getAttribute('data-action');
+      
+      openReasonModal(orderId, action);
+    }
+
+    function openReasonModal(orderId, status) {
+      pendingActionData.orderId = orderId;
+      pendingActionData.status = status;
+      const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+      modalTitle.textContent = `Reason for ${statusText}ing Order #${orderId}`;
+      reasonInput.value = '';
+      reasonModal.classList.add('show');
+      reasonInput.focus();
+      
+      // Disable action buttons while modal is open
+      document.querySelectorAll('.accept-btn, .decline-btn').forEach(btn => {
+        btn.disabled = true;
+      });
+    }
+
+    function closeReasonModal() {
+      reasonModal.classList.remove('show');
+      reasonInput.value = '';
+      pendingActionData = { orderId: null, status: null };
+      
+      // Re-enable action buttons
+      document.querySelectorAll('.accept-btn, .decline-btn').forEach(btn => {
+        btn.disabled = false;
+      });
+      
+      // Reset confirm button
+      const confirmBtn = document.querySelector('.modal-confirm-btn');
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Confirm';
+      }
+    }
+
+    function submitReason() {
+      const reason = reasonInput.value.trim();
+      
+      if (!reason) {
+        alert('Please enter a reason before proceeding.');
+        reasonInput.focus();
+        return;
+      }
+
+      const orderId = pendingActionData.orderId;
+      const status = pendingActionData.status;
+      
+      if (!orderId || !status) {
+        alert('Error: Invalid order action. Please try again.');
+        closeReasonModal();
+        return;
+      }
+      
+      // Disable the confirm button to prevent double submission
+      const confirmBtn = document.querySelector('.modal-confirm-btn');
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'Processing...';
+      
+      updateOrderStatus(orderId, status, reason);
+      closeReasonModal();
+    }
+
+    function updateOrderStatus(orderId, status, reason) {
+      const order = orders.find(o => o.id === orderId);
+      if (!order) {
+        alert('Error: Order not found. Please refresh the page and try again.');
+        return;
+      }
+      
+      order.status = status;
+      order.reason = reason;
+      
+      try {
+        saveOrders();
+        renderOrders();
+        const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+        showToast(`Order #${orderId} has been ${status}ed successfully!`, 'success');
+      } catch (error) {
+        console.error('Error updating order:', error);
+        showToast('Error saving order changes. Please try again.', 'error');
+        // Revert the changes
+        order.status = 'pending';
+        order.reason = '';
+      }
+    }
+
+    function showToast(message, type = 'info') {
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      
+      // Add to page
+      document.body.appendChild(toast);
+      
+      // Show toast
+      setTimeout(() => toast.classList.add('show'), 100);
+      
+      // Hide and remove toast
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => document.body.removeChild(toast), 300);
+      }, 3000);
+    }
+
+    function saveOrders() {
+      localStorage.setItem('storeOrders', JSON.stringify(orders));
+    }
+
+    // Initialize
+    renderOrders();
+  </script>
+</body>
+</html>
