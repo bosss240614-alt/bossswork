@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Come'N'Learn | A School Built for Curiosity</title>
+  <meta name="description" content="Come'N'Learn - a unique school blending academics, craft, faith, and community living." />
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #475569;
+      --paper: #f8fafc;
+      --accent: #0d9488;
+      --accent-2: #c2410c;
+      --card: #ffffff;
+      --radius: 14px;
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+      --font: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background: linear-gradient(180deg, #ecfeff 0%, var(--paper) 38%, #fff7ed 100%);
+      line-height: 1.6;
+    }
+    a { color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: #0f766e; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(248, 250, 252, 0.85);
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    }
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 0;
+      flex-wrap: wrap;
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-size: 1.15rem;
+    }
+    .brand span { color: var(--accent-2); }
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1rem;
+      align-items: center;
+    }
+    nav a {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 0.35rem 0.5rem;
+      border-radius: 8px;
+    }
+    nav a:hover { background: rgba(13, 148, 136, 0.12); color: #0f766e; }
+    .hero {
+      padding: 3.5rem 0 2.5rem;
+    }
+    .hero-inner {
+      display: grid;
+      gap: 2rem;
+      align-items: center;
+    }
+    @media (min-width: 880px) {
+      .hero-inner { grid-template-columns: 1.05fr 0.95fr; }
+    }
+    .photo-frame {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      aspect-ratio: 4/3;
+      background: #e2e8f0;
+    }
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .img-cap {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin: 0.4rem 0 0;
+    }
+    .img-cap a { color: var(--muted); }
+    .card-img {
+      margin: -1.35rem -1.35rem 1rem -1.35rem;
+      border-radius: var(--radius) var(--radius) 0 0;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      background: #e2e8f0;
+    }
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .section-banner {
+      margin: 0 0 1.25rem;
+      border-radius: var(--radius);
+      overflow: hidden;
+      aspect-ratio: 21/9;
+      max-height: 300px;
+      background: #e2e8f0;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+    .section-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0 0;
+    }
+    .photo-pair figure {
+      margin: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: #e2e8f0;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+    .photo-pair img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      letter-spacing: -0.03em;
+      margin: 0 0 0.75rem;
+      line-height: 1.15;
+    }
+    .hero p.lead {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 52ch;
+      margin: 0 0 1.5rem;
+    }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.65rem 1.1rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 10px 30px rgba(13, 148, 136, 0.35); }
+    .btn-primary:hover { background: #0f766e; color: #fff; }
+    .btn-ghost { background: #fff; color: var(--ink); border: 1px solid rgba(15, 23, 42, 0.12); }
+    .btn-ghost:hover { background: #f1f5f9; color: var(--ink); }
+    .grid {
+      display: grid;
+      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      margin: 2.5rem 0 3rem;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.35rem 1.35rem 1.2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+    .card h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+    .card p { margin: 0; color: var(--muted); font-size: 0.98rem; }
+    .card .link {
+      display: inline-block;
+      margin-top: 0.85rem;
+      font-weight: 700;
+    }
+    section.page {
+      scroll-margin-top: 88px;
+      padding: 2.5rem 0;
+      border-top: 1px solid rgba(15, 23, 42, 0.06);
+    }
+    section.page h2 {
+      font-size: 1.65rem;
+      margin: 0 0 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    section.page p { color: var(--muted); max-width: 65ch; margin: 0 0 1rem; }
+    .pill {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-2);
+      background: rgba(194, 65, 12, 0.1);
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      margin-bottom: 0.5rem;
+    }
+    ul.feature-list { margin: 0; padding-left: 1.2rem; color: var(--muted); }
+    ul.feature-list li { margin-bottom: 0.35rem; }
+    footer {
+      padding: 2rem 0 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap bar">
+      <div class="brand" id="top"><a href="come-n-learn-school.html" style="color:inherit;text-decoration:none;">Come<span>'N'</span>Learn</a></div>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="teachers.html">Teachers</a></li>
+          <li><a href="director.html">Director</a></li>
+          <li><a href="#facilities">Facilities</a></li>
+          <li><a href="#top-shop">Top-Shop Menu</a></li>
+          <li><a href="#mosque">Mosque</a></li>
+          <li><a href="#hostel">Hostel</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <div class="hero-inner">
+        <div>
+          <p class="pill">A school unlike the usual timetable</p>
+          <h1>Where minds wander on purpose &mdash; welcome to <em>Come'N'Learn</em></h1>
+          <p class="lead">
+            We are a small community school that pairs strong academics with hands-on craft,
+            daily reflection, and a calm residential rhythm. Explore our spaces, our canteen favorites,
+            and the places students call home.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="teachers.html">Meet our teachers</a>
+            <a class="btn btn-ghost" href="director.html">Meet our director</a>
+            <a class="btn btn-ghost" href="#facilities">See facilities</a>
+            <a class="btn btn-ghost" href="#top-shop">Browse the Top-Shop menu</a>
+          </div>
+        </div>
+        <figure style="margin:0;">
+          <div class="photo-frame">
+            <img
+              src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&amp;fit=crop&amp;w=1200&amp;q=80"
+              alt="Students learning together in a bright classroom"
+              width="1200"
+              height="900"
+              fetchpriority="high"
+            />
+          </div>
+          <figcaption class="img-cap">
+            Stock photo &mdash; replace with your own campus shots anytime.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="grid" aria-label="Quick links">
+        <article class="card">
+          <div class="card-img">
+            <img
+              src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&amp;fit=crop&amp;w=900&amp;q=80"
+              alt="Teacher writing on a whiteboard in a classroom"
+              width="900"
+              height="563"
+              loading="lazy"
+            />
+          </div>
+          <h2>Teachers &amp; subjects</h2>
+          <p>Browse profiles by subject: who teaches what, and how to recognize us in the corridor.</p>
+          <a class="link" href="teachers.html">Open the faculty directory &rarr;</a>
+        </article>
+        <article class="card">
+          <div class="card-img">
+            <img
+              src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&amp;fit=crop&amp;w=900&amp;q=80"
+              alt="Shelves of books in a school library"
+              width="900"
+              height="563"
+              loading="lazy"
+            />
+          </div>
+          <h2>Campus &amp; labs</h2>
+          <p>Studios, workshops, and quiet study corners designed for focus and collaboration.</p>
+          <a class="link" href="#facilities">Facilities page &rarr;</a>
+        </article>
+        <article class="card">
+          <div class="card-img">
+            <img
+              src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&amp;fit=crop&amp;w=900&amp;q=80"
+              alt="Fresh colorful meal in a bowl"
+              width="900"
+              height="563"
+              loading="lazy"
+            />
+          </div>
+          <h2>Top-Shop canteen</h2>
+          <p>Seasonal meals, student-baked treats, and a rotating &ldquo;top picks&rdquo; board.</p>
+          <a class="link" href="#top-shop">Open the menu &rarr;</a>
+        </article>
+        <article class="card">
+          <div class="card-img">
+            <img
+              src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&amp;fit=crop&amp;w=900&amp;q=80"
+              alt="Students collaborating at a table outdoors"
+              width="900"
+              height="563"
+              loading="lazy"
+            />
+          </div>
+          <h2>Faith &amp; boarding</h2>
+          <p>A welcoming mosque for prayer and a hostel built for rest, routines, and friendship.</p>
+          <a class="link" href="#mosque">Mosque &rarr;</a>
+          <br />
+          <a class="link" href="#hostel">Hostel &rarr;</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="page wrap" id="facilities" aria-labelledby="facilities-heading">
+      <div class="section-banner">
+        <img
+          src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&amp;fit=crop&amp;w=1600&amp;q=80"
+          alt="Hands working with tools in a workshop"
+          width="1600"
+          height="686"
+          loading="lazy"
+        />
+      </div>
+      <span class="pill">Facilities</span>
+      <h2 id="facilities-heading">Facilities at Come'N'Learn</h2>
+      <p>
+        Our campus mixes old-school chalkboards with maker tools: a timber workshop, robotics bay,
+        greenhouse, and a library that stays open late during exam season. Outdoor classes happen
+        on the courtyard steps when the weather smiles.
+      </p>
+      <ul class="feature-list">
+        <li>STEM &amp; arts labs with shared project storage</li>
+        <li>Sound-treated rehearsal rooms for music and drama</li>
+        <li>Sports pitch and indoor court for year-round play</li>
+      </ul>
+      <div class="photo-pair" aria-hidden="true">
+        <figure>
+          <img
+            src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&amp;fit=crop&amp;w=800&amp;q=80"
+            alt=""
+            width="800"
+            height="600"
+            loading="lazy"
+          />
+        </figure>
+        <figure>
+          <img
+            src="https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&amp;fit=crop&amp;w=800&amp;q=80"
+            alt=""
+            width="800"
+            height="600"
+            loading="lazy"
+          />
+        </figure>
+      </div>
+      <p class="img-cap">Decorative photos: library stacks and indoor sports &mdash; illustrative only.</p>
+      <p style="margin-top:1rem;">
+        <strong>Replace this block with your real facilities URL if you host it separately:</strong>
+        <a href="facilities.html">facilities.html</a>
+      </p>
+    </section>
+
+    <section class="page wrap" id="top-shop" aria-labelledby="top-shop-heading">
+      <div class="section-banner">
+        <img
+          src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&amp;fit=crop&amp;w=1600&amp;q=80"
+          alt="Table spread with several plated dishes"
+          width="1600"
+          height="686"
+          loading="lazy"
+        />
+      </div>
+      <span class="pill">Top-Shop Menu</span>
+      <h2 id="top-shop-heading">Today at the Top-Shop</h2>
+      <p>
+        The Top-Shop is our student-run canteen corner: affordable plates, bold flavors, and a
+        weekly &ldquo;top board&rdquo; voted by learners. Vegetarian and halal-friendly options are always on rotation.
+      </p>
+      <ul class="feature-list">
+        <li><strong>House flatbread</strong> &mdash; herb butter, roasted veg, yogurt drizzle</li>
+        <li><strong>Scholar bowl</strong> &mdash; grains, chickpeas, citrus dressing</li>
+        <li><strong>Top-Shop brownie</strong> &mdash; small batch, different topping each Friday</li>
+      </ul>
+      <p style="margin-top:1rem;">
+        <strong>Standalone menu page (optional):</strong>
+        <a href="top-shop-menu.html">top-shop-menu.html</a>
+      </p>
+    </section>
+
+    <section class="page wrap" id="mosque" aria-labelledby="mosque-heading">
+      <div class="section-banner">
+        <img
+          src="https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&amp;fit=crop&amp;w=1600&amp;q=80"
+          alt="Ornate Islamic architecture and a dome against the sky"
+          width="1600"
+          height="686"
+          loading="lazy"
+        />
+      </div>
+      <span class="pill">Mosque</span>
+      <h2 id="mosque-heading">The Come'N'Learn mosque</h2>
+      <p>
+        A calm, well-lit prayer space on campus with ablution facilities nearby. Jumu&apos;ah is hosted
+        when numbers allow, and visiting scholars sometimes lead short reflections after Maghrib during term.
+      </p>
+      <p>
+        <strong>Optional separate page:</strong> <a href="mosque.html">mosque.html</a>
+      </p>
+    </section>
+
+    <section class="page wrap" id="hostel" aria-labelledby="hostel-heading">
+      <div class="section-banner">
+        <img
+          src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&amp;fit=crop&amp;w=1600&amp;q=80"
+          alt="Tidy shared bedroom with bunk beds and desks"
+          width="1600"
+          height="686"
+          loading="lazy"
+        />
+      </div>
+      <span class="pill">Hostel</span>
+      <h2 id="hostel-heading">The Come'N'Learn hostel</h2>
+      <p>
+        Dorm life here is intentionally structured: study hours, house mentors, and weekend outings
+        that are optional but rarely skipped. Rooms are shared in small clusters so nobody drifts alone.
+      </p>
+      <ul class="feature-list">
+        <li>Quiet floors during exam weeks</li>
+        <li>Shared kitchens for light snacks (with safety orientation)</li>
+        <li>Laundry and storage on each wing</li>
+      </ul>
+      <p style="margin-top:1rem;">
+        <strong>Optional separate page:</strong> <a href="hostel.html">hostel.html</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      &copy; <span id="y"></span> Come'N'Learn. Crafted as a demo page &mdash; swap placeholder links for your live site.
+    </div>
+  </footer>
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
